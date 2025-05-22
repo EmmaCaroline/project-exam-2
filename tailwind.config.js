@@ -4,9 +4,14 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["system-ui", "Avenir", "Helvetica", "Arial", "sans-serif"],
+        heading: ["Chivo", "sans-serif"],
+        body: ["Tinos", "serif"],
       },
-      colors: {},
+      colors: {
+        primary: "#B2C5D1",
+        secondary: "#3A515F",
+        customButton: "#FEC156",
+      },
     },
   },
   plugins: [],

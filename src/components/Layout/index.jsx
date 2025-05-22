@@ -1,13 +1,71 @@
 import { Outlet, Link } from "react-router-dom";
+import { useState } from "react";
+import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
+import Logo from "../../assets/holidaze-logo.png";
 
 const Layout = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  console.log("Menu open:", menuOpen);
   return (
-    <div className="min-h-screen flex flex-col">
-      <header>
-        <h1>Test</h1>
+    <div className="min-h-screen flex flex-col bg-primary">
+      <header className="relative bg-white shadow-lg px-6 sm:px-8 py-1 flex items-center justify-between">
+        <Link to="/">
+          <div className="group">
+            <img
+              className="aspect-square w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:transition-all lg:duration-300 lg:group-hover:scale-105"
+              src={Logo}
+              alt="Logo"
+            />
+          </div>
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden sm:flex gap-6">
+          <Link
+            to="/register"
+            className="font-heading text-secondary hover:text-black text-lg"
+          >
+            Register
+          </Link>
+          <Link
+            to="/login"
+            className="font-heading text-secondary hover:text-black text-lg"
+          >
+            Login
+          </Link>
+        </nav>
+
+        {/* Mobile menu button */}
+        <button
+          onClick={toggleMenu}
+          className={`sm:hidden focus:outline-none ${menuOpen ? "text-secondary" : "text-black"}`}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <RxCross1 size={24} /> : <RxHamburgerMenu size={24} />}
+        </button>
+
+        {/* Mobile nav dropdown */}
+        {menuOpen && (
+          <nav className="absolute top-full w-1/2 md:w-1/4 lg:w-1/5 right-0 bg-white shadow-lg flex flex-col items-center md:hidden">
+            <Link
+              to="/register"
+              className="py-2 w-full text-center border-b text-secondary active:text-black"
+            >
+              Register
+            </Link>
+            <Link
+              to="/login"
+              className="py-2 w-full text-center text-secondary active:text-black"
+            >
+              Login
+            </Link>
+          </nav>
+        )}
       </header>
       <main className="flex-grow p-4">
-        <Outlet /> {/* This is where page content will be injected */}
+        <Outlet />
       </main>
       <footer></footer>
     </div>
