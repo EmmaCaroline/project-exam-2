@@ -64,10 +64,16 @@ const Layout = () => {
           </nav>
         )}
       </header>
+
       <main className="flex-grow p-4">
         <Outlet />
       </main>
-      <footer></footer>
+
+      <footer className="bg-secondary text-white p-4 text-center">
+        <div className="text-sm md:text-base m-4 md:m-8">
+          &copy; 2025 Holidaze
+        </div>
+      </footer>
     </div>
   );
 };
