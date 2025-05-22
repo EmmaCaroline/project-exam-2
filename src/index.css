@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /* Base button styles */
+  .btn {
+    @apply font-body text-sm md:text-base py-1.5 px-8 rounded-full;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply bg-customButton text-black hover:bg-secondary hover:text-white;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-gray-400 hover:text-black;
+  }
+}
