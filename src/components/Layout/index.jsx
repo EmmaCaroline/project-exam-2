@@ -2,9 +2,13 @@ import { Outlet, Link } from "react-router-dom";
 import { useState } from "react";
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import Logo from "../../assets/holidaze-logo.png";
+import { useLogout } from "../../auth/HandleLogout";
 
 const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const logout = useLogout();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn = !!user;
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   console.log("Menu open:", menuOpen);
@@ -23,18 +27,37 @@ const Layout = () => {
 
         {/* Desktop nav */}
         <nav className="hidden sm:flex gap-6">
-          <Link
-            to="/register"
-            className="font-heading text-secondary hover:text-black text-lg"
-          >
-            Register
-          </Link>
-          <Link
-            to="/login"
-            className="font-heading text-secondary hover:text-black text-lg"
-          >
-            Login
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <button
+                onClick={logout}
+                className="font-heading text-secondary hover:text-black text-lg"
+              >
+                Logout
+              </button>
+              <Link
+                to="/profile"
+                className="font-heading text-secondary hover:text-black text-lg"
+              >
+                Profile
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/register"
+                className="font-heading text-secondary hover:text-black text-lg"
+              >
+                Register
+              </Link>
+              <Link
+                to="/login"
+                className="font-heading text-secondary hover:text-black text-lg"
+              >
+                Login
+              </Link>
+            </>
+          )}
         </nav>
 
         {/* Mobile menu button */}
@@ -49,18 +72,37 @@ const Layout = () => {
         {/* Mobile nav dropdown */}
         {menuOpen && (
           <nav className="absolute top-full w-1/2 md:w-1/4 lg:w-1/5 right-0 bg-white shadow-lg flex flex-col items-center md:hidden">
-            <Link
-              to="/register"
-              className="py-2 w-full text-center border-b text-secondary active:text-black"
-            >
-              Register
-            </Link>
-            <Link
-              to="/login"
-              className="py-2 w-full text-center text-secondary active:text-black"
-            >
-              Login
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <button
+                  onClick={logout}
+                  className="py-4 w-full text-center border-b text-secondary active:text-black"
+                >
+                  Logout
+                </button>
+                <Link
+                  to="/profile"
+                  className="py-4 w-full text-center border-b text-secondary active:text-black"
+                >
+                  Profile
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="py-4 w-full text-center border-b text-secondary active:text-black"
+                >
+                  Register
+                </Link>
+                <Link
+                  to="/login"
+                  className="py-4 w-full text-center border-b text-secondary active:text-black"
+                >
+                  Login
+                </Link>
+              </>
+            )}
           </nav>
         )}
       </header>
