@@ -3,6 +3,7 @@ import { useState } from "react";
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import Logo from "../../assets/holidaze-logo.png";
 import { useLogout } from "../../auth/HandleLogout";
+import FooterBanner from "../../assets/sunset.jpg";
 
 const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ const Layout = () => {
   console.log("Menu open:", menuOpen);
   return (
     <div className="min-h-screen flex flex-col bg-primary">
-      <header className="relative bg-white shadow-lg px-6 sm:px-8 py-1 flex items-center justify-between">
+      <header className="relative bg-white border border-secondary shadow-lg px-6 sm:px-8 py-1 flex items-center justify-between">
         <Link to="/">
           <div className="group">
             <img
@@ -111,8 +112,13 @@ const Layout = () => {
         <Outlet />
       </main>
 
-      <footer className="bg-secondary text-white p-4 text-center">
-        <div className="text-sm md:text-base m-4 md:m-8">
+      <footer>
+        <img
+          className="w-full h-14 sm:h-16 md:h-24 mt-10 md:mt-16"
+          src={FooterBanner}
+          alt="Sunset banner"
+        />
+        <div className="bg-secondary text-sm md:text-base text-center text-white p-8 sm:p-10 md:p-14 lg:p-16">
           &copy; 2025 Holidaze
         </div>
       </footer>

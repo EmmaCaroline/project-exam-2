@@ -56,7 +56,7 @@ const Venues = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl md:text-4xl text-center my-6 md:my-10 mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
+      <h1 className="font-heading text-3xl md:text-4xl text-center my-6 md:my-10 mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
         Ready for your next holiday?
       </h1>
       <Search
@@ -64,7 +64,11 @@ const Venues = () => {
         setQuery={setQuery}
         filteredVenues={filteredVenues}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 mt-4 mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
+      <h2 className="font-heading text-xl lg:text-2xl mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
+        Browse our venues
+      </h2>
+      <hr class="border-t-1 border-secondary mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-10 mt-4 mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
         {filteredVenues.map((venue) => (
           <VenueCard key={venue.id} venue={venue} />
         ))}

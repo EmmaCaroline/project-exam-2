@@ -14,7 +14,7 @@ const VenueCard = ({ venue }) => {
 
   return (
     <Link to={`/venue/${venue.id}`}>
-      <div className="h-full w-full rounded shadow-md">
+      <div className="h-full w-full rounded">
         <div className="block w-full h-56 overflow-hidden rounded-lg relative group">
           <img
             src={firstImage.url || DefaultImage}
