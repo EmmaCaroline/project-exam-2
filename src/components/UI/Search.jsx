@@ -2,11 +2,9 @@ import { CiSearch } from "react-icons/ci";
 
 const Search = ({ query, setQuery }) => {
   return (
-    <div className="py-2 w-full sm:w-auto">
-      <div className="relative rounded-md shadow-sm w-full">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <CiSearch className="text-gray-500 text-lg" />
-        </div>
+    <div className="flex justify-center p-4">
+      <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-full shadow-sm focus-within:ring-2 focus-within:ring-customButton focus-within:border-customButton w-full sm:w-72 md:w-96 bg-white">
+        <CiSearch className="text-gray-500 text-lg" />
         <input
           type="text"
           name="query"
@@ -14,7 +12,7 @@ const Search = ({ query, setQuery }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search venues"
-          className="pl-10 pr-3 py-1.5 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none block w-full sm:w-72 md:w-96 text-black"
+          className="w-full focus:outline-none text-black bg-transparent"
         />
       </div>
     </div>

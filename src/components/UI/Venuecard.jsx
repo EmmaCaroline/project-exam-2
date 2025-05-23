@@ -25,8 +25,8 @@ const VenueCard = ({ venue }) => {
             }
             className="w-full h-full object-cover rounded-lg"
           />
-          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 transition duration-300 flex items-center justify-center rounded-lg">
-            <p class="font-heading text-white text-base lg:text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 transition duration-300 flex items-center justify-center rounded-lg">
+            <p className="font-heading text-white text-base lg:text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">
               View venue
             </p>
           </div>
