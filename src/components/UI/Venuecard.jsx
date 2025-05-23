@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import DefaultImage from "../../assets/No_Image_Available.jpg";
-import { CiLocationOn } from "react-icons/ci";
+import { FaLocationDot } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa6";
 
 const VenueCard = ({ venue }) => {
@@ -33,7 +33,7 @@ const VenueCard = ({ venue }) => {
         </div>
 
         <p className="mt-2 flex items-center text-sm md:text-base font-body text-gray-800">
-          <CiLocationOn className="mr-1 text-lg" />
+          <FaLocationDot className="mr-1 text-lg" />
           {location}
         </p>
 
