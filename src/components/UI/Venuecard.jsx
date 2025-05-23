@@ -1,36 +1,60 @@
 import { Link } from "react-router-dom";
+import DefaultImage from "../../assets/No_Image_Available.jpg";
+import { CiLocationOn } from "react-icons/ci";
+import { FaStar } from "react-icons/fa6";
 
 const VenueCard = ({ venue }) => {
-  const starRating = venue.data.rating.toFixed(2);
-  const location =
-    venue.data.location.city + ", " + venue.data.location.country;
+  const starRating = venue.rating.toFixed(1);
+  const location = venue.location.city + ", " + venue.location.country;
+
+  const firstImage =
+    venue.media && venue.media.length > 0
+      ? venue.media[0]
+      : { url: "", alt: "" };
 
   return (
-    <div className="flex flex-col items-center group my-4 shadow-md rounded pb-3">
-      <div className="flex-grow">
-        <div className="relative">
-          <Link to={`/venue/${venue.data.id}`}>
-            <img
-              src={venue.data.image.url}
-              alt={venue.data.image.alt}
-              className="w-56 h-56 sm:w-64 sm:h-64 xl:w-80 xl:h-80 aspect-square object-cover rounded-lg transition duration-300 ease-linear group-hover:scale-105 border border-gray-300"
-            />
-          </Link>
+    <Link to={`/venue/${venue.id}`}>
+      <div className="h-full w-full rounded shadow-md">
+        <div className="block w-full h-56 overflow-hidden rounded-lg relative group">
+          <img
+            src={firstImage.url || DefaultImage}
+            alt={
+              venue.media && venue.media.length > 0
+                ? firstImage.alt || venue.name
+                : "Default venue image"
+            }
+            className="w-full h-full object-cover rounded-lg"
+          />
+          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 transition duration-300 flex items-center justify-center rounded-lg">
+            <p class="font-heading text-white text-base lg:text-lg font-semibold opacity-0 group-hover:opacity-100 transition duration-300">
+              View venue
+            </p>
+          </div>
         </div>
-        <p className="text-sm md:text-base font-body">{location}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <span className="text-sm md:text-base font-body font-semibold">
-            {venue.data.name}
+
+        <p className="mt-2 flex items-center text-sm md:text-base font-body text-gray-800">
+          <CiLocationOn className="mr-1 text-lg" />
+          {location}
+        </p>
+
+        <div className="mt-2 flex items-center justify-between">
+          <span
+            className="text-sm md:text-base font-body font-semibold line-clamp-1 overflow-hidden break-words pr-8"
+            title={venue.name}
+          >
+            {venue.name}
           </span>
-          <>
-            <span className="text-sm md:text-base font-body">{starRating}</span>
-          </>
+          <span className="flex items-center text-sm md:text-base font-body flex-shrink-0">
+            <FaStar className="mr-1 text-lg" />
+            {starRating}
+          </span>
         </div>
-        <p className="text-sm md:text-base font-body">
-          ${venue.data.price + " /night"}
+
+        <p className="text-sm md:text-base font-body font-medium">
+          ${venue.price} /night
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
