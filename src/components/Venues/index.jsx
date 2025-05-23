@@ -84,7 +84,7 @@ const Venues = () => {
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+          className="px-4 py-1 bg-secondary text-white font-body rounded hover:bg-gray-600 disabled:opacity-50"
         >
           Previous
         </button>
@@ -96,7 +96,7 @@ const Venues = () => {
             setCurrentPage((prev) => Math.min(prev + 1, pageCount))
           }
           disabled={currentPage === pageCount}
-          className="px-4 py-2 bg-primary text-white rounded disabled:opacity-50"
+          className="px-4 py-1 bg-secondary text-white font-body rounded hover:bg-gray-600 disabled:opacity-50"
         >
           Next
         </button>
