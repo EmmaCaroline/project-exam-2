@@ -41,9 +41,18 @@ const Venues = () => {
     return <div>Error loading data</div>;
   }
 
-  const filteredVenues = venues.filter((venue) =>
-    venue.name.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filteredVenues = venues.filter((venue) => {
+    const lowerQuery = query.toLowerCase();
+    const searchableText = `
+    ${venue.name} 
+    ${venue.description}
+    ${venue.location?.city} 
+    ${venue.location?.country} 
+    ${venue.location?.address}
+  `.toLowerCase();
+
+    return searchableText.includes(lowerQuery);
+  });
 
   return (
     <div>
