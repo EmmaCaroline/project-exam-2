@@ -12,7 +12,6 @@ const Layout = () => {
   const isLoggedIn = !!user;
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  console.log("Menu open:", menuOpen);
   return (
     <div className="min-h-screen flex flex-col bg-primary">
       <header className="relative bg-white border border-secondary shadow-lg px-6 sm:px-8 py-1 flex items-center justify-between">
