@@ -8,7 +8,7 @@ import { GrNext, GrPrevious } from "react-icons/gr";
 import { FaStar } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
-import CreateBooking from "../Bookings";
+import CreateBooking from "../CreateBooking";
 
 import "swiper/css";
 import "swiper/css/navigation";

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BOOKING } from "../../utils/constants";
 import { getHeaders } from "../../utils/headers";
+import { fetchBookingsByVenue } from "../../utils/fetchBookings";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -25,26 +26,12 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
       return;
     }
 
-    const fetchBookings = async () => {
-      try {
-        const response = await fetch(`${API_BOOKING}?_venue=true`, {
-          headers: getHeaders(),
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        const venueBookings = result.data.filter(
-          (booking) => booking.venue.id === venueId,
-        );
-
-        setBookings(venueBookings);
-      } catch (error) {
-        console.error("Failed to fetch bookings", error);
-      }
+    const loadBookings = async () => {
+      const venueBookings = await fetchBookingsByVenue(venueId);
+      setBookings(venueBookings);
     };
 
-    fetchBookings();
+    loadBookings();
   }, [venueId, isLoggedIn]);
 
   useEffect(() => {

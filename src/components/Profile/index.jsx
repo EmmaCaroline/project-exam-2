@@ -2,12 +2,17 @@ import { API_PROFILES } from "../../utils/constants";
 import { getHeaders } from "../../utils/headers";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { FaUserEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { fetchBookingsByProfile } from "../../utils/fetchBookingsByProfile";
+import BookingCard from "../UI/Bookingcard";
 
-const Profile = () => {
+export const Profile = () => {
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
     if (!username) return;
@@ -28,8 +33,10 @@ const Profile = () => {
         }
 
         const json = await response.json();
-
         setProfile(json.data);
+
+        const bookingsData = await fetchBookingsByProfile(username);
+        setBookings(bookingsData);
       } catch (err) {
         if (err.name === "TypeError") {
           setError("Network error, try again later");
@@ -49,24 +56,47 @@ const Profile = () => {
   if (!profile) return <p>No profile data found.</p>;
 
   return (
-    <div className="profile mx-auto p-4 border rounded shadow">
-      <div className="mb-4">
-        {profile.avatar?.url && (
-          <img
-            src={profile.avatar.url}
-            alt={profile.avatar.alt || "Profile avatar"}
-            className="w-20 h-20 rounded-full border-2 object-cover"
-          />
-        )}
+    <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
+      <div className="mb-4 flex items-center justify-between ">
+        <span className="flex items-center flex-shrink-0 gap-4">
+          {profile.avatar?.url && (
+            <img
+              src={profile.avatar.url}
+              alt={profile.avatar.alt || "Profile avatar"}
+              className="w-14 h-14 md:w-32 md:h-32 rounded-full border-2 object-cover"
+            />
+          )}
+          <h1 className="font-heading font-bold text-lg md:text-xl lg:text-2xl mb-2">
+            {profile.name}
+          </h1>
+        </span>
+        <Link to={`editprofile`}>
+          <span className="flex items-center flex-shrink-0 gap-2">
+            <FaUserEdit className="text-xl lg:text-2xl" />
+            <button className="font-body text-sm md:text-base hidden md:flex">
+              Edit avatar
+            </button>
+          </span>
+        </Link>
       </div>
-
-      <h1 className="text-2xl font-bold mb-2">{profile.name}</h1>
+      <hr className="border-t-1 border-secondary pt-1 pb-2" />
 
       <p>
         Venue Manager: <strong>{profile.venueManager ? "Yes" : "No"}</strong>
       </p>
+      {bookings.length > 0 ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {bookings
+            .filter((booking) => booking.venue) // Optional safety check
+            .map((booking) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+        </div>
+      ) : (
+        <p>No bookings found.</p>
+      )}
     </div>
   );
 };
 
-export default Profile;
+export const EditProfile = () => {};
