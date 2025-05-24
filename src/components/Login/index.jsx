@@ -30,13 +30,13 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center bg-primary">
+    <div className="flex justify-center bg-primary mt-8">
       <div className="pt-4 pb-4 bg-secondary">
         <form
           onSubmit={handleSubmit}
-          className="w-80 mx-8 p-6 bg-white rounded-lg shadow-lg border border-customBlue font-body md:w-96"
+          className="sm:w-80 mx-8 p-6 bg-white rounded-lg shadow-lg border border-customBlue font-body md:w-96"
         >
-          <div>
+          <div className="mb-4">
             <label
               htmlFor="email"
               className="block text-sm md:text-base font-body font-medium text-gray-700 mb-2"
@@ -51,7 +51,7 @@ const Login = () => {
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <div>
+          <div className="mb-4">
             <label
               htmlFor="password"
               className="block text-sm md:text-base font-body font-medium text-gray-700 mb-2"
@@ -76,7 +76,9 @@ const Login = () => {
               Login successful!
             </p>
           )}
-          <button type="submit">Login</button>
+          <button type="submit" className="btn btn-primary">
+            Login
+          </button>
         </form>
       </div>
     </div>

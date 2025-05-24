@@ -72,11 +72,11 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center bg-primary">
+    <div className="flex justify-center bg-primary mt-8">
       <div className="pt-4 pb-4 bg-secondary">
         <form
           onSubmit={handleSubmit}
-          className="w-80 mx-8 p-6 bg-white rounded-lg shadow-lg border border-customBlue font-body md:w-96"
+          className="sm:w-80 mx-8 p-6 bg-white rounded-lg shadow-lg border border-customBlue font-body md:w-96"
         >
           <div className="mb-4">
             <label
