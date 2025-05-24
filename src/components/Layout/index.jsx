@@ -36,7 +36,7 @@ const Layout = () => {
                 Logout
               </button>
               <Link
-                to="/profile"
+                to={`profile/${user.name}`}
                 className="font-heading text-secondary hover:text-black text-lg"
               >
                 Profile
@@ -81,7 +81,7 @@ const Layout = () => {
                   Logout
                 </button>
                 <Link
-                  to="/profile"
+                  to={`profile/${user.name}`}
                   className="py-4 w-full text-center border-b text-secondary active:text-black"
                 >
                   Profile
