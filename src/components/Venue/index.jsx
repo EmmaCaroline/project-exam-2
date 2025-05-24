@@ -55,6 +55,8 @@ const Venue = () => {
       ? data.media
       : [{ url: DefaultImage, alt: "No image available" }];
 
+  const loopEnabled = mediaArray.length > 1;
+
   return (
     <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
       <div className="flex flex-col md:flex-row md:w-full overflow-hidden">
@@ -71,7 +73,7 @@ const Venue = () => {
               swiper.params.navigation.nextEl = nextRef.current;
             }}
             pagination={{ clickable: true }}
-            loop={true}
+            loop={loopEnabled}
             className="w-full h-full"
           >
             {mediaArray.map((mediaItem, index) => (
@@ -160,7 +162,11 @@ const Venue = () => {
       </div>
       <div className="flex flex-col md:flex-row md:w-full overflow-hidden mt-6">
         <div className="w-full md:w-1/2 mt-4 md:mt-0">
-          <CreateBooking venueId={data.id} maxGuests={data.maxGuests} />
+          <CreateBooking
+            venueId={data.id}
+            maxGuests={data.maxGuests}
+            price={data.price}
+          />
         </div>
         <div className="flex-col md:h-80 ml-0 md:ml-8 mt-4 md:mt-0">
           <h2 className="font-heading text-lg md:text-xl lg:text-2xl mb-2">
