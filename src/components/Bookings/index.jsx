@@ -18,6 +18,12 @@ const CreateBooking = ({ venueId, maxGuests }) => {
   const isLoggedIn = !!localStorage.getItem("token");
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      // Don't fetch bookings if not logged in
+      setBookings([]); // Optional: clear bookings if previously fetched
+      return;
+    }
+
     const fetchBookings = async () => {
       try {
         const response = await fetch(`${API_BOOKING}?_venue=true`, {
@@ -27,7 +33,6 @@ const CreateBooking = ({ venueId, maxGuests }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
-        console.log(result);
         const venueBookings = result.data.filter(
           (booking) => booking.venue.id === venueId,
         );
@@ -38,7 +43,7 @@ const CreateBooking = ({ venueId, maxGuests }) => {
     };
 
     fetchBookings();
-  }, [venueId]);
+  }, [venueId, isLoggedIn]);
 
   const isDateRangeValid = () => {
     return dateFrom && dateTo && dateFrom <= dateTo;
@@ -127,13 +132,16 @@ const CreateBooking = ({ venueId, maxGuests }) => {
   };
 
   return (
-    <div className="mt-6 border p-4 rounded shadow">
-      <h3 className="font-heading text-xl font-semibold mb-2">
+    <div className="w-full mx-auto p-5 bg-white rounded-lg shadow-md">
+      <h2 className="font-heading text-lg font-bold mb-5 text-gray-900">
         Book this venue
-      </h3>
+      </h2>
 
-      <div className="flex flex-col gap-2 mb-4">
-        <label>
+      <div className="flex flex-col gap-4 mb-5">
+        <label
+          htmlFor="dateFrom"
+          className="flex flex-col text-gray-700 text-sm font-semibold"
+        >
           From:
           <DatePicker
             selected={dateFrom}
@@ -146,11 +154,15 @@ const CreateBooking = ({ venueId, maxGuests }) => {
               start: new Date(b.dateFrom),
               end: new Date(b.dateTo),
             }))}
-            className="border p-1 rounded w-full"
+            className="mt-1 border border-gray-300 rounded-md px-2 py-1.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholderText="Select start date"
           />
         </label>
-        <label>
+
+        <label
+          htmlFor="dateTo"
+          className="flex flex-col text-gray-700 text-sm font-semibold"
+        >
           To:
           <DatePicker
             selected={dateTo}
@@ -163,43 +175,46 @@ const CreateBooking = ({ venueId, maxGuests }) => {
               start: new Date(b.dateFrom),
               end: new Date(b.dateTo),
             }))}
-            className="border p-1 rounded w-full"
+            className="mt-1 border border-gray-300 rounded-md px-2 py-1.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholderText="Select end date"
           />
         </label>
-        <label>
-          Guests (max {maxGuests}):
-          <input
-            type="number"
-            value={guests}
-            onChange={handleGuestChange}
-            className="border p-1 rounded w-full"
-            min={1}
-            max={maxGuests}
-          />
-        </label>
-        {guestError && <p className="text-red-600">{guestError}</p>}
       </div>
 
+      <label
+        htmlFor="guests"
+        className="block mb-5 text-gray-700 text-sm font-semibold"
+      >
+        Guests (max {maxGuests}):
+        <input
+          type="number"
+          value={guests}
+          onChange={handleGuestChange}
+          min={1}
+          max={maxGuests}
+          className="mt-1 block pr-10 border border-gray-300 rounded-md px-2 py-1.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </label>
+      {guestError && (
+        <p className="text-red-600 text-sm -mt-4 mb-4">{guestError}</p>
+      )}
+
       {!isLoggedIn ? (
-        <button
-          onClick={() => navigate("/login")}
-          className="bg-gray-800 text-white px-4 py-2 rounded"
-        >
+        <button onClick={() => navigate("/login")} className="btn btn-primary">
           Login to book this venue
         </button>
       ) : showConfirm ? (
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button
             onClick={handleBooking}
             disabled={isBooking || guests < 1 || guests > maxGuests}
-            className="bg-green-600 text-white px-4 py-2 rounded"
+            className="flex-1 bg-green-600 text-white py-2.5 rounded-md hover:bg-green-700 disabled:opacity-50 transition"
           >
             Confirm
           </button>
           <button
             onClick={() => setShowConfirm(false)}
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            className="flex-1 bg-red-500 text-white py-2.5 rounded-md hover:bg-red-600 transition"
           >
             Cancel
           </button>
@@ -207,9 +222,9 @@ const CreateBooking = ({ venueId, maxGuests }) => {
       ) : (
         <button
           onClick={() => setShowConfirm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="btn btn-primary"
         >
-          Book now
+          BOOK NOW
         </button>
       )}
     </div>
