@@ -71,7 +71,7 @@ const Layout = () => {
 
         {/* Mobile nav dropdown */}
         {menuOpen && (
-          <nav className="absolute top-full w-1/2 md:w-1/4 lg:w-1/5 right-0 bg-white shadow-lg flex flex-col items-center md:hidden">
+          <nav className="absolute top-full w-1/2 md:w-1/4 lg:w-1/5 right-0 bg-white shadow-lg flex flex-col items-center md:hidden z-10">
             {isLoggedIn ? (
               <>
                 <button
