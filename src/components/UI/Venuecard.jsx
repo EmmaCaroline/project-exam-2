@@ -5,7 +5,13 @@ import { FaStar } from "react-icons/fa6";
 
 const VenueCard = ({ venue }) => {
   const starRating = venue.rating.toFixed(1);
-  const location = venue.location.city + ", " + venue.location.country;
+  const city = venue.location?.city || "";
+  const country = venue.location?.country || "";
+
+  const location =
+    city && country
+      ? `${city}, ${country}`
+      : city || country || "Location unknown";
 
   const firstImage =
     venue.media && venue.media.length > 0

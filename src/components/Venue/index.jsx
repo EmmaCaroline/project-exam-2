@@ -23,6 +23,14 @@ const Venue = () => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
+  const city = data?.location?.city || "";
+  const country = data?.location?.country || "";
+
+  const location =
+    city && country
+      ? `${city}, ${country}`
+      : city || country || "Location unknown";
+
   useEffect(() => {
     async function getData(url) {
       try {
@@ -112,7 +120,7 @@ const Venue = () => {
           <div className="flex justify-between items-center mr-14 md:mr-8 mb-2">
             <span className="flex items-center text-sm md:text-base font-body flex-shrink-0">
               <FaLocationDot className="mr-1 text-lg" />
-              {data.location.city}, {data.location.country}
+              {location}
             </span>
             <span className="flex items-center text-sm md:text-base font-body flex-shrink-0">
               <FaStar className="mr-1 text-lg" />
