@@ -8,6 +8,7 @@ import { GrNext, GrPrevious } from "react-icons/gr";
 import { FaStar } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
+import CreateBooking from "../Bookings";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -57,7 +58,7 @@ const Venue = () => {
   return (
     <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
       <div className="flex flex-col md:flex-row md:w-full overflow-hidden">
-        {/* Swiper Carousel */}
+        {/* Image Carousel */}
         <div className="relative w-full md:w-1/2 h-80 lg:h-[450px]">
           <Swiper
             modules={[Navigation, Pagination]}
@@ -84,7 +85,6 @@ const Venue = () => {
             ))}
           </Swiper>
 
-          {/* Custom Prev Button */}
           <button
             ref={prevRef}
             className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-2 lg:p-3 rounded-full z-10"
@@ -93,7 +93,6 @@ const Venue = () => {
             <GrPrevious className="w-4 md:w-6 h-4 lg:h-6" />
           </button>
 
-          {/* Custom Next Button */}
           <button
             ref={nextRef}
             className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-2 lg:p-3 rounded-full z-10"
@@ -167,7 +166,7 @@ const Venue = () => {
           <p>{data.description}</p>
         </div>
         <div className="w-full md:w-1/2 md:px-4 ml-0 md:ml-8 mt-4 md:mt-0">
-          <p>BOOKING SECTION HERE LATER</p>
+          <CreateBooking venueId={data.id} maxGuests={data.maxGuests} />
         </div>
       </div>
     </div>

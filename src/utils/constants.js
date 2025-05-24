@@ -11,3 +11,5 @@ export const API_AUTH_REGISTER = `${API_AUTH}/register`;
 export const API_VENUES = `${API_BASE}/holidaze/venues`;
 
 export const API_PROFILES = `${API_BASE}/holidaze/profiles`;
+
+export const API_BOOKING = `${API_BASE}/holidaze/bookings`;

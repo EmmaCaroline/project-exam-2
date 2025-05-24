@@ -3,63 +3,101 @@ import { API_VENUES } from "../../utils/constants";
 import Search from "../UI/Search";
 import VenueCard from "../UI/Venuecard";
 
+const VENUES_PER_PAGE = 20;
+
 const Venues = () => {
+  const [allVenues, setAllVenues] = useState([]);
   const [venues, setVenues] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
-  const VENUES_PER_PAGE = 20;
 
   useEffect(() => {
-    async function getData() {
+    async function fetchAll() {
       try {
         setIsError(false);
-        setIsLoading(true);
-        const response = await fetch(
-          `${API_VENUES}?page=${currentPage}&limit=${VENUES_PER_PAGE}`,
-        );
-        const json = await response.json();
+        const all = [];
+        let page = 1;
+        let totalPages = 1;
 
-        if (json && Array.isArray(json.data)) {
-          setVenues(json.data);
-          setPageCount(json.meta?.pageCount || 1);
-        } else {
-          throw new Error("Invalid data format");
-        }
+        do {
+          const res = await fetch(`${API_VENUES}?page=${page}&limit=100`);
+          const json = await res.json();
+          if (!json || !Array.isArray(json.data))
+            throw new Error("Invalid data");
 
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
+          all.push(...json.data);
+          totalPages = json.meta?.pageCount || 1;
+          page++;
+        } while (page <= totalPages);
+
+        setAllVenues(all);
+      } catch (err) {
         setIsError(true);
-        console.error("Error fetching data:", error);
+        console.error(err);
       }
     }
 
-    getData();
-  }, [currentPage]);
+    fetchAll();
+  }, []);
 
-  if (isLoading) {
-    return <div>Loading venues...</div>;
-  }
+  useEffect(() => {
+    if (query) return;
 
-  if (isError) {
-    return <div>Error loading data</div>;
-  }
+    async function fetchPage() {
+      try {
+        setIsError(false);
+        setIsLoading(true);
 
-  const filteredVenues = venues.filter((venue) => {
-    const lowerQuery = query.toLowerCase();
-    const searchableText = `
-      ${venue.name} 
-      ${venue.description}
-      ${venue.location?.city} 
-      ${venue.location?.country} 
-      ${venue.location?.address}
-    `.toLowerCase();
+        const res = await fetch(
+          `${API_VENUES}?page=${currentPage}&limit=${VENUES_PER_PAGE}`,
+        );
+        const json = await res.json();
 
-    return searchableText.includes(lowerQuery);
-  });
+        if (!json || !Array.isArray(json.data)) throw new Error("Invalid data");
+
+        setVenues(json.data);
+        setPageCount(json.meta?.pageCount || 1);
+        setIsLoading(false);
+      } catch (err) {
+        setIsError(true);
+        setIsLoading(false);
+        console.error(err);
+      }
+    }
+
+    fetchPage();
+  }, [currentPage, query]);
+
+  const filteredVenues = query
+    ? allVenues.filter((venue) => {
+        const lowerQuery = query.toLowerCase();
+        const searchableText = `
+          ${venue.name} 
+          ${venue.description}
+          ${venue.location?.city} 
+          ${venue.location?.country} 
+          ${venue.location?.address}
+        `.toLowerCase();
+        return searchableText.includes(lowerQuery);
+      })
+    : [];
+
+  const venuesToDisplay = query ? filteredVenues : venues;
+
+  const searchPageCount = Math.ceil(filteredVenues.length / VENUES_PER_PAGE);
+
+  const paginatedVenues = query
+    ? venuesToDisplay.slice(
+        (currentPage - 1) * VENUES_PER_PAGE,
+        currentPage * VENUES_PER_PAGE,
+      )
+    : venuesToDisplay;
+
+  if (isLoading) return <div>Loading venues...</div>;
+  if (isError) return <div>Error loading data</div>;
 
   return (
     <div>
@@ -68,15 +106,18 @@ const Venues = () => {
       </h1>
       <Search
         query={query}
-        setQuery={setQuery}
-        filteredVenues={filteredVenues}
+        setQuery={(q) => {
+          setQuery(q);
+          setCurrentPage(1);
+        }}
+        filteredVenues={paginatedVenues}
       />
       <h2 className="font-heading text-xl lg:text-2xl mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
         Browse our venues
       </h2>
       <hr className="border-t-1 border-secondary mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-10 mt-4 mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28">
-        {filteredVenues.map((venue) => (
+        {paginatedVenues.map((venue) => (
           <VenueCard key={venue.id} venue={venue} />
         ))}
       </div>
@@ -89,13 +130,15 @@ const Venues = () => {
           Previous
         </button>
         <span className="text-base">
-          Page {currentPage} of {pageCount}
+          Page {currentPage} of {query ? searchPageCount : pageCount}
         </span>
         <button
           onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, pageCount))
+            setCurrentPage((prev) =>
+              Math.min(prev + 1, query ? searchPageCount : pageCount),
+            )
           }
-          disabled={currentPage === pageCount}
+          disabled={currentPage === (query ? searchPageCount : pageCount)}
           className="px-4 py-1 bg-secondary text-white font-body text-sm md:text-base rounded hover:bg-gray-600 disabled:opacity-50"
         >
           Next
