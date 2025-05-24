@@ -166,7 +166,8 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
               <FaCalendarAlt className="w-4 h-4 " />
             </span>
             <DatePicker
-              id={dateFrom}
+              id="dateFrom"
+              name="dateFrom"
               selected={dateFrom}
               onChange={(date) => setDateFrom(date)}
               selectsStart
@@ -194,7 +195,8 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
               <FaCalendarAlt className="w-4 h-4 " />
             </span>
             <DatePicker
-              id={dateTo}
+              id="dateTo"
+              name="dateTo"
               selected={dateTo}
               onChange={(date) => setDateTo(date)}
               selectsEnd
@@ -220,7 +222,8 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
         Guests (max {maxGuests}):
       </label>
       <input
-        id={guests}
+        id="guests"
+        name="guests"
         type="number"
         value={guests}
         onChange={handleGuestChange}

@@ -86,32 +86,39 @@ const Register = () => {
               Username:
             </label>
             <input
+              id="name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              autoComplete="username"
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
             {fieldErrors.name && (
               <p className="text-red-600 text-sm mt-1">{fieldErrors.name}</p>
             )}
           </div>
+
           <div className="mb-4">
             <label htmlFor="email">Email:</label>
             <input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
             {fieldErrors.email && (
               <p className="text-red-600 text-sm mt-1">{fieldErrors.email}</p>
             )}
           </div>
+
           <div className="mb-4">
             <label htmlFor="password">Password:</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -124,9 +131,11 @@ const Register = () => {
               </p>
             )}
           </div>
+
           <div className="mb-4">
             <label htmlFor="avatar">Profile picture / avatar (optional):</label>
             <input
+              id="avatar"
               type="url"
               value={avatar}
               onChange={(e) => setAvatar(e.target.value)}
@@ -137,6 +146,7 @@ const Register = () => {
               <p className="text-red-600 text-sm mt-1">{fieldErrors.avatar}</p>
             )}
           </div>
+
           <div className="mb-4 flex items-center">
             <input
               type="checkbox"

@@ -44,13 +44,17 @@ const Login = () => {
               Email:
             </label>
             <input
+              id="email"
+              name="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
+
           <div className="mb-4">
             <label
               htmlFor="password"
@@ -59,6 +63,8 @@ const Login = () => {
               Password:
             </label>
             <input
+              id="password"
+              name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -66,16 +72,19 @@ const Login = () => {
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
+
           {error && (
             <p className="text-red-900 bg-red-200 border border-red-500 rounded-md p-2 mt-3 mb-3 font-semibold">
               {error}
             </p>
           )}
+
           {success && (
             <p className="text-green-700 bg-green-100 border border-green-400 rounded-md p-2 mt-3 mb-3 font-semibold">
               Login successful!
             </p>
           )}
+
           <button type="submit" className="btn btn-primary">
             Login
           </button>
