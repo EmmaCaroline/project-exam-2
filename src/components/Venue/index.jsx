@@ -9,6 +9,9 @@ import { FaStar } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import CreateBooking from "../CreateBooking";
+import { getHeaders } from "../../utils/headers";
+import { useNavigate } from "react-router-dom";
+import BookingList from "../UI/BookingList";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -25,6 +28,9 @@ const Venue = () => {
 
   const city = data?.location?.city || "";
   const country = data?.location?.country || "";
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
 
   const location =
     city && country
@@ -65,8 +71,52 @@ const Venue = () => {
 
   const loopEnabled = mediaArray.length > 1;
 
+  const canDelete = user?.name === data.owner.name && user?.venueManager;
+
+  async function handleDelete() {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this venue?",
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`${API_VENUES}/${id}`, {
+        method: "DELETE",
+        headers: getHeaders(),
+      });
+
+      if (response.ok) {
+        alert("Venue deleted successfully!");
+        navigate("/");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to delete venue:", errorData);
+        alert("Failed to delete the venue. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting venue:", error);
+      alert("An error occurred while deleting the venue.");
+    }
+  }
+
   return (
     <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
+      {canDelete && (
+        <div className="flex space-x-4 mt-4">
+          <button
+            onClick={() => navigate(`/editvenue/${id}`)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Edit Venue
+          </button>
+          <button
+            onClick={handleDelete}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Delete Venue
+          </button>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:w-full overflow-hidden">
         {/* Image Carousel */}
         <div className="relative w-full md:w-1/2 h-80 md:h-[370px] lg:h-[450px]">
@@ -170,11 +220,15 @@ const Venue = () => {
       </div>
       <div className="flex flex-col md:flex-row md:w-full overflow-hidden mt-6">
         <div className="w-full md:w-1/2 mt-4 md:mt-0">
-          <CreateBooking
-            venueId={data.id}
-            maxGuests={data.maxGuests}
-            price={data.price}
-          />
+          {user?.venueManager && user?.name === data.owner.name ? (
+            <BookingList bookings={data.bookings} />
+          ) : (
+            <CreateBooking
+              venueId={data.id}
+              maxGuests={data.maxGuests}
+              price={data.price}
+            />
+          )}
         </div>
         <div className="w-full md:w-1/2 ml-0 md:ml-8 mt-4 md:mt-0">
           <h2 className="font-heading text-lg md:text-xl lg:text-2xl mb-2">

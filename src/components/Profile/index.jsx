@@ -11,7 +11,7 @@ import { fetchVenuesByProfile } from "../../utils/fetchVenuesByProfile";
 import VenueCard from "../UI/Venuecard";
 import { IoIosCreate } from "react-icons/io";
 
-export const Profile = () => {
+const Profile = () => {
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -114,7 +114,7 @@ export const Profile = () => {
               {profile.name}
             </h1>
           </span>
-          <Link to={`/editprofile`}>
+          <Link to={`/editprofile/${username}`}>
             <span className="flex items-center flex-shrink-0 gap-2">
               <FaUserEdit className="text-xl lg:text-2xl" />
               <button className="font-body text-sm md:text-base hidden md:flex">
@@ -152,7 +152,7 @@ export const Profile = () => {
               <h2 className="font-heading font-bold text-lg md:text-xl lg:text-2xl">
                 Your venues
               </h2>
-              <Link to="/create-venue">
+              <Link to="/createvenue">
                 <span className="flex items-center flex-shrink-0 gap-2">
                   <IoIosCreate className="text-xl lg:text-2xl" />
                   <button className="font-body text-sm md:text-base md:flex">
@@ -186,4 +186,4 @@ export const Profile = () => {
   );
 };
 
-export const EditProfile = () => {};
+export default Profile;

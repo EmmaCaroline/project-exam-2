@@ -16,6 +16,7 @@ export async function handleLogin({ email, password }) {
     });
 
     const result = await response.json();
+    console.log(result.data);
 
     if (response.ok) {
       save("token", result.data.accessToken);
