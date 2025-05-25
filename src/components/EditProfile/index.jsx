@@ -81,22 +81,28 @@ const EditProfile = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-8 sm:mx-auto space-y-4 mt-8"
+    >
+      <h2 className="font-heading text-lg md:text-xl lg:text-2xl block font-medium mb-1">
+        Edit profile
+      </h2>
       <div>
-        <label htmlFor="avatarUrl" className="block font-medium mb-1">
-          New Avatar Image URL
+        <label
+          htmlFor="avatarUrl"
+          className="font-body text-sm md:text-base mb-2"
+        >
+          New Avatar Image
         </label>
         <input
           id="avatarUrl"
           type="url"
-          placeholder="https://example.com/avatar.jpg"
+          placeholder="Full image URL"
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
           className="w-full border rounded px-3 py-2"
         />
-        <p className="text-sm text-gray-500 mt-1">
-          Leave blank to keep your current avatar.
-        </p>
         {currentAvatarUrl && (
           <img
             src={currentAvatarUrl}
@@ -107,21 +113,24 @@ const EditProfile = () => {
       </div>
 
       <div>
-        <label className="inline-flex items-center space-x-2">
+        <label
+          htmlFor="venueManager"
+          className="inline-flex items-center space-x-2"
+        >
           <input
+            id="venueManager"
             type="checkbox"
             checked={venueManager}
             onChange={(e) => setVenueManager(e.target.checked)}
+            className="mt-10"
           />
-          <span>Become a Venue Manager</span>
+          <span className="font-body text-sm md:text-base mt-10">
+            Become a Venue Manager
+          </span>
         </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50"
-      >
+      <button type="submit" disabled={loading} className="btn btn-primary">
         {loading ? "Saving..." : "Save Changes"}
       </button>
 
