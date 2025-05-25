@@ -4,14 +4,29 @@ import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import Logo from "../../assets/holidaze-logo.png";
 import { useLogout } from "../../auth/HandleLogout";
 import FooterBanner from "../../assets/sunset.jpg";
+import ConfirmModal from "../UI/ConfirmModal"; // Import your ConfirmModal
 
 const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false); // State for modal open/close
   const logout = useLogout();
   const user = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = !!user;
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  // Open the logout confirmation modal
+  const openConfirm = () => setConfirmOpen(true);
+
+  // Close the logout confirmation modal
+  const closeConfirm = () => setConfirmOpen(false);
+
+  // Confirm logout handler (called when user confirms logout)
+  const confirmLogout = () => {
+    closeConfirm();
+    logout();
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-primary">
       <header className="relative bg-white border border-secondary shadow-lg px-6 sm:px-8 py-1 flex items-center justify-between">
@@ -30,7 +45,7 @@ const Layout = () => {
           {isLoggedIn ? (
             <>
               <button
-                onClick={logout}
+                onClick={openConfirm} // Open modal instead of direct logout
                 className="font-heading text-secondary hover:text-black text-lg"
               >
                 Logout
@@ -63,7 +78,9 @@ const Layout = () => {
         {/* Mobile menu button */}
         <button
           onClick={toggleMenu}
-          className={`sm:hidden focus:outline-none ${menuOpen ? "text-secondary" : "text-black"}`}
+          className={`sm:hidden focus:outline-none ${
+            menuOpen ? "text-secondary" : "text-black"
+          }`}
           aria-label="Toggle menu"
         >
           {menuOpen ? <RxCross1 size={24} /> : <RxHamburgerMenu size={24} />}
@@ -75,7 +92,7 @@ const Layout = () => {
             {isLoggedIn ? (
               <>
                 <button
-                  onClick={logout}
+                  onClick={openConfirm} // Open modal on mobile too
                   className="py-4 w-full text-center border-b text-secondary active:text-black"
                 >
                   Logout
@@ -121,6 +138,13 @@ const Layout = () => {
           &copy; 2025 Holidaze
         </div>
       </footer>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onConfirm={confirmLogout}
+        onCancel={closeConfirm}
+        message="Are you sure you want to log out?"
+      />
     </div>
   );
 };

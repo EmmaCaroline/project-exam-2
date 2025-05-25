@@ -1,4 +1,4 @@
-import { API_PROFILES } from "../../utils/constants";
+import { API_PROFILES, API_BOOKING } from "../../utils/constants";
 import { getHeaders } from "../../utils/headers";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { fetchBookingsByProfile } from "../../utils/fetchBookingsByProfile";
 import BookingCard from "../UI/Bookingcard";
+import ConfirmModal from "../UI/ConfirmModal";
 
 export const Profile = () => {
   const { username } = useParams();
@@ -13,6 +14,18 @@ export const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+
+  const openConfirm = (id) => {
+    setSelectedBookingId(id);
+    setConfirmOpen(true);
+  };
+
+  const closeConfirm = () => {
+    setSelectedBookingId(null);
+    setConfirmOpen(false);
+  };
 
   useEffect(() => {
     if (!username) return;
@@ -51,51 +64,87 @@ export const Profile = () => {
     fetchProfile();
   }, [username]);
 
+  const deleteBooking = async () => {
+    if (!selectedBookingId) return;
+
+    try {
+      const response = await fetch(`${API_BOOKING}/${selectedBookingId}`, {
+        method: "DELETE",
+        headers: getHeaders(),
+      });
+
+      if (!response.ok) throw new Error("Failed to delete booking");
+
+      setBookings((prev) =>
+        prev.filter((booking) => booking.id !== selectedBookingId),
+      );
+
+      closeConfirm();
+    } catch (error) {
+      alert(error.message || "An error occurred while deleting booking");
+    }
+  };
+
   if (isLoading) return <p>Loading profile...</p>;
   if (error) return <p className="text-red-600">Error: {error}</p>;
   if (!profile) return <p>No profile data found.</p>;
 
   return (
-    <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
-      <div className="mb-4 flex items-center justify-between ">
-        <span className="flex items-center flex-shrink-0 gap-4">
-          {profile.avatar?.url && (
-            <img
-              src={profile.avatar.url}
-              alt={profile.avatar.alt || "Profile avatar"}
-              className="w-14 h-14 md:w-32 md:h-32 rounded-full border-2 object-cover"
-            />
-          )}
-          <h1 className="font-heading font-bold text-lg md:text-xl lg:text-2xl mb-2">
-            {profile.name}
-          </h1>
-        </span>
-        <Link to={`editprofile`}>
-          <span className="flex items-center flex-shrink-0 gap-2">
-            <FaUserEdit className="text-xl lg:text-2xl" />
-            <button className="font-body text-sm md:text-base hidden md:flex">
-              Edit avatar
-            </button>
+    <>
+      <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
+        <div className="mb-4 flex items-center justify-between ">
+          <span className="flex items-center flex-shrink-0 gap-4">
+            {profile.avatar?.url && (
+              <img
+                src={profile.avatar.url}
+                alt={profile.avatar.alt || "Profile avatar"}
+                className="w-14 h-14 md:w-32 md:h-32 rounded-full border-2 object-cover"
+              />
+            )}
+            <h1 className="font-heading font-bold text-lg md:text-xl lg:text-2xl mb-2">
+              {profile.name}
+            </h1>
           </span>
-        </Link>
-      </div>
-      <hr className="border-t-1 border-secondary pt-1 pb-2" />
-
-      <p>
-        Venue Manager: <strong>{profile.venueManager ? "Yes" : "No"}</strong>
-      </p>
-      {bookings.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {bookings
-            .filter((booking) => booking.venue) // Optional safety check
-            .map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
-            ))}
+          <Link to={`editprofile`}>
+            <span className="flex items-center flex-shrink-0 gap-2">
+              <FaUserEdit className="text-xl lg:text-2xl" />
+              <button className="font-body text-sm md:text-base hidden md:flex">
+                Edit avatar
+              </button>
+            </span>
+          </Link>
         </div>
-      ) : (
-        <p>No bookings found.</p>
-      )}
-    </div>
+        <hr className="border-t-1 border-secondary pt-1 pb-2" />
+
+        <p>
+          Venue Manager: <strong>{profile.venueManager ? "Yes" : "No"}</strong>
+        </p>
+
+        {bookings.length === 0 ? (
+          <p>No bookings found.</p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {bookings
+              .filter((booking) => booking.venue)
+              .map((booking) => (
+                <BookingCard
+                  key={booking.id}
+                  booking={booking}
+                  onDelete={() => openConfirm(booking.id)}
+                />
+              ))}
+          </div>
+        )}
+      </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onConfirm={deleteBooking}
+        onCancel={closeConfirm}
+        message="Are you sure you want to delete this booking?"
+      />
+    </>
   );
 };
 
