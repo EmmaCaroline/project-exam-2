@@ -14,8 +14,9 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
   const [bookings, setBookings] = useState([]);
-  const [guestError, setGuestError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [nights, setNights] = useState(0);
+  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
@@ -65,36 +66,38 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
     const value = Number(e.target.value);
     if (value < 1) {
       setGuests(1);
-      setGuestError("");
+      setErrorMessage("Please select at least 1 guest.");
     } else if (value > maxGuests) {
       setGuests(maxGuests);
-      setGuestError(`Maximum guests allowed is ${maxGuests}`);
+      setErrorMessage(`Maximum guests allowed is ${maxGuests}.`);
     } else {
       setGuests(value);
-      setGuestError("");
+      setErrorMessage("");
     }
   };
 
   const handleBooking = async () => {
     if (guests < 1) {
-      alert("Please select at least 1 guest.");
+      setErrorMessage("Please select at least 1 guest.");
       return;
     }
     if (guests > maxGuests) {
-      alert(`Maximum guests allowed is ${maxGuests}.`);
+      setErrorMessage(`Maximum guests allowed is ${maxGuests}.`);
       return;
     }
     if (!isDateRangeValid()) {
-      alert("Please select a valid date range.");
+      setErrorMessage("Please select a valid date range.");
       return;
     }
     if (isOverlapping()) {
-      alert("Selected dates overlap with an existing booking.");
+      setErrorMessage("Selected dates overlap with an existing booking.");
       return;
     }
 
     try {
       setIsBooking(true);
+      setErrorMessage("");
+
       const response = await fetch(API_BOOKING, {
         method: "POST",
         headers: getHeaders(),
@@ -109,20 +112,22 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
       const result = await response.json();
 
       if (response.ok) {
-        alert("Booking successful!");
+        setSuccess(true);
         setDateFrom(null);
         setDateTo(null);
         setGuests(1);
-        setGuestError("");
+        setErrorMessage("");
+
+        setTimeout(() => setSuccess(false), 3000);
       } else {
-        alert(
+        setErrorMessage(
           "Booking failed: " +
             (result.errors?.[0]?.message || "Unknown error."),
         );
       }
     } catch (error) {
       console.error("Booking error:", error);
-      alert("An error occurred.");
+      setErrorMessage("An error occurred.");
     } finally {
       setIsBooking(false);
       setShowConfirm(false);
@@ -134,7 +139,7 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
       <h2 className="font-heading text-lg md:text-xl lg:text-2xl font-bold mb-6 text-gray-900">
         Book this venue
       </h2>
-      <p className="text-sm md:text-base font-medium  mb-4">${price} /night</p>
+      <p className="text-sm md:text-base font-medium mb-4">${price} /night</p>
       {nights > 0 && (
         <p className="text-sm md:text-base font-semibold text-blue-900 mb-4">
           Total cost for {nights} {nights === 1 ? "night" : "nights"}: $
@@ -142,7 +147,7 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
         </p>
       )}
 
-      <div className="mb-5 grid grid-cols-1 lg:grid-cols-2 gap-4 ">
+      <div className="mb-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
         <label
           htmlFor="dateFrom"
           className="flex flex-col text-gray-700 text-sm font-semibold"
@@ -150,7 +155,7 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
           From:
           <div className="relative mt-1">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 text-black">
-              <FaCalendarAlt className="w-4 h-4 " />
+              <FaCalendarAlt className="w-4 h-4" />
             </span>
             <DatePicker
               id="dateFrom"
@@ -179,7 +184,7 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
           To:
           <div className="relative mt-1">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 text-black">
-              <FaCalendarAlt className="w-4 h-4 " />
+              <FaCalendarAlt className="w-4 h-4" />
             </span>
             <DatePicker
               id="dateTo"
@@ -218,8 +223,14 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
         max={maxGuests}
         className="mt-1 mb-6 block border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      {guestError && (
-        <p className="text-red-600 text-sm mt-1 mb-2">{guestError}</p>
+      {errorMessage && (
+        <p className="text-red-600 text-sm mt-1 mb-2">{errorMessage}</p>
+      )}
+
+      {success && (
+        <p className="text-green-700 bg-green-100 border border-green-400 rounded-md p-2 mt-3 mb-3 font-semibold">
+          Booking successful!
+        </p>
       )}
 
       {!isLoggedIn ? (
@@ -234,13 +245,13 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
           <button
             onClick={handleBooking}
             disabled={isBooking || guests < 1 || guests > maxGuests}
-            className="flex-1 bg-green-600 text-white py-3 rounded-md hover:bg-green-700 disabled:opacity-50 transition"
+            className="flex-1 bg-green-600 text-white btn btn-primary"
           >
             Confirm
           </button>
           <button
             onClick={() => setShowConfirm(false)}
-            className="flex-1 bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition"
+            className="flex-1 bg-red-500 text-white btn btn-primary"
           >
             Cancel
           </button>
