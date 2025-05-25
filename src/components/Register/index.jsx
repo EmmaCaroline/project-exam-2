@@ -16,29 +16,25 @@ const Register = () => {
   const validateForm = () => {
     const errors = {};
 
-    // Name validation
     if (!/^[a-zA-Z0-9_]+$/.test(name)) {
       errors.name =
         "Username can only contain letters, numbers, and underscores.";
     }
 
-    // Email validation
     if (!/^[\w.-]+@stud\.noroff\.no$/.test(email)) {
       errors.email = "Email must be a valid stud.noroff.no address.";
     }
 
-    // Password validation
     if (password.length < 8) {
       errors.password = "Password must be at least 8 characters.";
     }
 
-    // Avatar URL validation (optional)
     if (avatar && !/^https?:\/\/\S+\.\S+$/.test(avatar)) {
       errors.avatar = "Avatar must be a valid URL.";
     }
 
     setFieldErrors(errors);
-    return Object.keys(errors).length === 0; // return true if no errors
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
@@ -62,7 +58,6 @@ const Register = () => {
       setPassword("");
       setAvatar("");
 
-      // 3. Redirect after 2 seconds
       setTimeout(() => {
         navigate("/login");
       }, 2000);

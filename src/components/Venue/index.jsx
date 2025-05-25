@@ -28,9 +28,9 @@ const Venue = () => {
   const country = data?.location?.country || "";
 
   const user = JSON.parse(localStorage.getItem("user"));
+  const profileName = user?.name;
   const navigate = useNavigate();
 
-  // State to control ConfirmModal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const location =
@@ -94,9 +94,8 @@ const Venue = () => {
     }
   };
 
-  // Delete handlers using ConfirmModal
   const handleDelete = async () => {
-    setIsModalOpen(false); // Close modal first
+    setIsModalOpen(false);
 
     try {
       const response = await fetch(`${API_VENUES}/${id}`, {
@@ -105,8 +104,9 @@ const Venue = () => {
       });
 
       if (response.ok) {
-        alert("Venue deleted successfully!");
-        navigate("/");
+        if (response.ok) {
+          setTimeout(() => navigate(`/profile/${profileName}`), 1500);
+        }
       } else {
         const errorData = await response.json();
         console.error("Failed to delete venue:", errorData);

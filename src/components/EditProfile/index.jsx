@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getHeaders } from "../../utils/headers";
 import { API_PROFILES } from "../../utils/constants";
 import { useParams } from "react-router-dom";

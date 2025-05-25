@@ -1,5 +1,3 @@
-import React from "react";
-
 const BookingList = ({ bookings }) => {
   if (!bookings || bookings.length === 0) {
     return <p>No bookings have been made for this venue yet.</p>;
