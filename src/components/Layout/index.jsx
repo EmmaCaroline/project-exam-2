@@ -1,36 +1,52 @@
 import { Outlet, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
 import Logo from "../../assets/holidaze-logo.png";
 import { useLogout } from "../../auth/HandleLogout";
 import FooterBanner from "../../assets/sunset.jpg";
-import ConfirmModal from "../UI/ConfirmModal"; // Import your ConfirmModal
+import ConfirmModal from "../UI/ConfirmModal";
 
 const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false); // State for modal open/close
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const logout = useLogout();
   const user = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = !!user;
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    }
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Open the logout confirmation modal
   const openConfirm = () => setConfirmOpen(true);
-
-  // Close the logout confirmation modal
   const closeConfirm = () => setConfirmOpen(false);
 
-  // Confirm logout handler (called when user confirms logout)
   const confirmLogout = () => {
     closeConfirm();
     logout();
+    setMenuOpen(false);
   };
+
+  const handleLinkClick = () => setMenuOpen(false);
 
   return (
     <div className="min-h-screen flex flex-col bg-primary">
       <header className="relative bg-white border border-secondary shadow-lg px-6 sm:px-8 py-1 flex items-center justify-between">
-        <Link to="/">
+        <Link to="/" onClick={handleLinkClick}>
           <div className="group">
             <img
               className="aspect-square w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:transition-all lg:duration-300 lg:group-hover:scale-105"
@@ -45,7 +61,10 @@ const Layout = () => {
           {isLoggedIn ? (
             <>
               <button
-                onClick={openConfirm} // Open modal instead of direct logout
+                onClick={() => {
+                  openConfirm();
+                  setMenuOpen(false);
+                }}
                 className="font-heading text-secondary hover:text-black text-lg"
               >
                 Logout
@@ -53,6 +72,7 @@ const Layout = () => {
               <Link
                 to={`profile/${user.name}`}
                 className="font-heading text-secondary hover:text-black text-lg"
+                onClick={handleLinkClick}
               >
                 Profile
               </Link>
@@ -62,12 +82,14 @@ const Layout = () => {
               <Link
                 to="/register"
                 className="font-heading text-secondary hover:text-black text-lg"
+                onClick={handleLinkClick}
               >
                 Register
               </Link>
               <Link
                 to="/login"
                 className="font-heading text-secondary hover:text-black text-lg"
+                onClick={handleLinkClick}
               >
                 Login
               </Link>
@@ -88,11 +110,17 @@ const Layout = () => {
 
         {/* Mobile nav dropdown */}
         {menuOpen && (
-          <nav className="absolute top-full w-1/2 md:w-1/4 lg:w-1/5 right-0 bg-white shadow-lg flex flex-col items-center md:hidden z-10">
+          <nav
+            ref={dropdownRef}
+            className="absolute top-full w-1/2 md:w-1/4 lg:w-1/5 right-0 bg-white shadow-lg flex flex-col items-center md:hidden z-10"
+          >
             {isLoggedIn ? (
               <>
                 <button
-                  onClick={openConfirm} // Open modal on mobile too
+                  onClick={() => {
+                    openConfirm();
+                    setMenuOpen(false);
+                  }}
                   className="py-4 w-full text-center border-b text-secondary active:text-black"
                 >
                   Logout
@@ -100,6 +128,7 @@ const Layout = () => {
                 <Link
                   to={`profile/${user.name}`}
                   className="py-4 w-full text-center border-b text-secondary active:text-black"
+                  onClick={handleLinkClick}
                 >
                   Profile
                 </Link>
@@ -109,12 +138,14 @@ const Layout = () => {
                 <Link
                   to="/register"
                   className="py-4 w-full text-center border-b text-secondary active:text-black"
+                  onClick={handleLinkClick}
                 >
                   Register
                 </Link>
                 <Link
                   to="/login"
                   className="py-4 w-full text-center border-b text-secondary active:text-black"
+                  onClick={handleLinkClick}
                 >
                   Login
                 </Link>
