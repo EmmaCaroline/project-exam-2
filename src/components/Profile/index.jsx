@@ -151,10 +151,6 @@ const Profile = () => {
           </Link>
         </div>
         <hr className="border-t-1 border-secondary pt-1 pb-2" />
-
-        <p>
-          Venue Manager: <strong>{profile.venueManager ? "Yes" : "No"}</strong>
-        </p>
         <h2 className="font-heading font-bold text-lg md:text-xl lg:text-2xl my-4">
           Your bookings
         </h2>

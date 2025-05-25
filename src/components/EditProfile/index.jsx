@@ -39,7 +39,6 @@ const EditProfile = () => {
     }
     async function fetchProfile() {
       try {
-        console.log("Fetching profile for user:", username);
         const res = await fetch(`${API_PROFILES}/${username}`, {
           headers: getHeaders(),
         });
