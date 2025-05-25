@@ -1,17 +1,15 @@
 import { API_VENUES, API_BOOKING } from "../../utils/constants";
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import DefaultImage from "../../assets/No_Image_Available.jpg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { GrNext, GrPrevious } from "react-icons/gr";
-import { FaStar } from "react-icons/fa6";
-import { FaLocationDot } from "react-icons/fa6";
-import { FaCheck } from "react-icons/fa6";
+import { FaStar, FaLocationDot, FaCheck } from "react-icons/fa6";
 import CreateBooking from "../CreateBooking";
 import { getHeaders } from "../../utils/headers";
-import { useNavigate } from "react-router-dom";
 import BookingList from "../UI/BookingList";
+import ConfirmModal from "../UI/ConfirmModal";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -31,6 +29,9 @@ const Venue = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
+
+  // State to control ConfirmModal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const location =
     city && country
@@ -93,11 +94,9 @@ const Venue = () => {
     }
   };
 
-  async function handleDelete() {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this venue?",
-    );
-    if (!confirmDelete) return;
+  // Delete handlers using ConfirmModal
+  const handleDelete = async () => {
+    setIsModalOpen(false); // Close modal first
 
     try {
       const response = await fetch(`${API_VENUES}/${id}`, {
@@ -117,21 +116,25 @@ const Venue = () => {
       console.error("Error deleting venue:", error);
       alert("An error occurred while deleting the venue.");
     }
-  }
+  };
+
+  const handleCancelDelete = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="mx-6 sm:mx-10 md:mx-4 lg:mx-20 xl:mx-28 my-6 md:my-10">
       {canDelete && (
-        <div className="flex space-x-4 mt-4">
+        <div className="flex space-x-4 my-4">
           <button
             onClick={() => navigate(`/editvenue/${id}`)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            className="btn btn-secondary"
           >
             Edit Venue
           </button>
           <button
-            onClick={handleDelete}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => setIsModalOpen(true)}
+            className="btn btn-secondary"
           >
             Delete Venue
           </button>
@@ -260,6 +263,14 @@ const Venue = () => {
           <p>{data.description}</p>
         </div>
       </div>
+
+      {/* ConfirmModal for delete */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onConfirm={handleDelete}
+        onCancel={handleCancelDelete}
+        message="Are you sure you want to delete this venue?"
+      />
     </div>
   );
 };
