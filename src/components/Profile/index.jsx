@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import { fetchBookingsByProfile } from "../../utils/fetchBookingsByProfile";
 import BookingCard from "../UI/Bookingcard";
 import ConfirmModal from "../UI/ConfirmModal";
+import { fetchVenuesByProfile } from "../../utils/fetchVenuesByProfile";
+import VenueCard from "../UI/Venuecard";
+import { IoIosCreate } from "react-icons/io";
 
 export const Profile = () => {
   const { username } = useParams();
@@ -16,6 +19,7 @@ export const Profile = () => {
   const [bookings, setBookings] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [venues, setVenues] = useState([]);
 
   const openConfirm = (id) => {
     setSelectedBookingId(id);
@@ -47,6 +51,11 @@ export const Profile = () => {
 
         const json = await response.json();
         setProfile(json.data);
+
+        if (json.data.venueManager) {
+          const venuesData = await fetchVenuesByProfile(username);
+          setVenues(venuesData);
+        }
 
         const bookingsData = await fetchBookingsByProfile(username);
         setBookings(bookingsData);
@@ -109,7 +118,7 @@ export const Profile = () => {
             <span className="flex items-center flex-shrink-0 gap-2">
               <FaUserEdit className="text-xl lg:text-2xl" />
               <button className="font-body text-sm md:text-base hidden md:flex">
-                Edit avatar
+                Edit profile
               </button>
             </span>
           </Link>
@@ -136,6 +145,33 @@ export const Profile = () => {
                 />
               ))}
           </div>
+        )}
+        {profile.venueManager && (
+          <>
+            <div className="flex items-center justify-between mt-8 mb-4">
+              <h2 className="font-heading font-bold text-lg md:text-xl lg:text-2xl">
+                Your venues
+              </h2>
+              <Link to="/create-venue">
+                <span className="flex items-center flex-shrink-0 gap-2">
+                  <IoIosCreate className="text-xl lg:text-2xl" />
+                  <button className="font-body text-sm md:text-base md:flex">
+                    Create Venue
+                  </button>
+                </span>
+              </Link>
+            </div>
+
+            {venues.length === 0 ? (
+              <p>No venues found.</p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {venues.map((venue) => (
+                  <VenueCard key={venue.id} venue={venue} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 

@@ -176,7 +176,7 @@ const Venue = () => {
             price={data.price}
           />
         </div>
-        <div className="flex-col md:h-80 ml-0 md:ml-8 mt-4 md:mt-0">
+        <div className="w-full md:w-1/2 ml-0 md:ml-8 mt-4 md:mt-0">
           <h2 className="font-heading text-lg md:text-xl lg:text-2xl mb-2">
             About this venue:
           </h2>
