@@ -1,4 +1,4 @@
-import { API_VENUES } from "../../utils/constants";
+import { API_VENUES, API_BOOKING } from "../../utils/constants";
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import DefaultImage from "../../assets/No_Image_Available.jpg";
@@ -72,6 +72,26 @@ const Venue = () => {
   const loopEnabled = mediaArray.length > 1;
 
   const canDelete = user?.name === data.owner.name && user?.venueManager;
+
+  const handleBookingSubmit = async (bookingData) => {
+    try {
+      const response = await fetch(API_BOOKING, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({
+          ...bookingData,
+          venueId: data.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Booking failed");
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      throw error;
+    }
+  };
 
   async function handleDelete() {
     const confirmDelete = window.confirm(
@@ -227,6 +247,9 @@ const Venue = () => {
               venueId={data.id}
               maxGuests={data.maxGuests}
               price={data.price}
+              bookings={data.bookings || []}
+              isLoggedIn={!!localStorage.getItem("token")}
+              onSubmitBooking={handleBookingSubmit}
             />
           )}
         </div>

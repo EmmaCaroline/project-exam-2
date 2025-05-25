@@ -1,136 +1,71 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { API_BOOKING } from "../../utils/constants";
-import { getHeaders } from "../../utils/headers";
-import { fetchBookingsByVenue } from "../../utils/fetchBookings";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const CreateBooking = ({ venueId, maxGuests, price }) => {
+const CreateBooking = ({
+  price,
+  maxGuests,
+  bookings,
+  isLoggedIn,
+  onSubmitBooking,
+}) => {
+  const navigate = useNavigate();
+
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
   const [guests, setGuests] = useState(1);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
-  const [bookings, setBookings] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [nights, setNights] = useState(0);
   const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem("token");
+  const nights =
+    dateFrom && dateTo
+      ? Math.ceil((dateTo - dateFrom) / (1000 * 60 * 60 * 24))
+      : 0;
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setBookings([]);
-      return;
+  const disabledDates = bookings.flatMap((b) => {
+    const start = new Date(b.dateFrom);
+    const end = new Date(b.dateTo);
+    const dates = [];
+    const current = new Date(start);
+    while (current <= end) {
+      dates.push(new Date(current));
+      current.setDate(current.getDate() + 1);
     }
-
-    const loadBookings = async () => {
-      const venueBookings = await fetchBookingsByVenue(venueId);
-      setBookings(venueBookings);
-    };
-
-    loadBookings();
-  }, [venueId, isLoggedIn]);
-
-  useEffect(() => {
-    if (dateFrom && dateTo && dateTo >= dateFrom) {
-      const oneDay = 1000 * 60 * 60 * 24;
-      const diffTime = dateTo.getTime() - dateFrom.getTime();
-      const diffDays = Math.ceil(diffTime / oneDay);
-      setNights(diffDays);
-    } else {
-      setNights(0);
-    }
-  }, [dateFrom, dateTo]);
-
-  const isDateRangeValid = () => {
-    return dateFrom && dateTo && dateFrom <= dateTo;
-  };
-
-  const isOverlapping = () => {
-    return bookings.some((booking) => {
-      const existingFrom = new Date(booking.dateFrom);
-      const existingTo = new Date(booking.dateTo);
-      return (
-        (dateFrom >= existingFrom && dateFrom <= existingTo) ||
-        (dateTo >= existingFrom && dateTo <= existingTo) ||
-        (dateFrom <= existingFrom && dateTo >= existingTo)
-      );
-    });
-  };
+    return dates;
+  });
 
   const handleGuestChange = (e) => {
-    const value = Number(e.target.value);
-    if (value < 1) {
-      setGuests(1);
-      setErrorMessage("Please select at least 1 guest.");
-    } else if (value > maxGuests) {
-      setGuests(maxGuests);
-      setErrorMessage(`Maximum guests allowed is ${maxGuests}.`);
-    } else {
-      setGuests(value);
-      setErrorMessage("");
-    }
+    const value = parseInt(e.target.value, 10);
+    setGuests(value > maxGuests ? maxGuests : value);
   };
 
   const handleBooking = async () => {
-    if (guests < 1) {
-      setErrorMessage("Please select at least 1 guest.");
+    if (!dateFrom || !dateTo || guests < 1 || guests > maxGuests) {
+      setErrorMessage("Please fill in all fields correctly.");
       return;
     }
-    if (guests > maxGuests) {
-      setErrorMessage(`Maximum guests allowed is ${maxGuests}.`);
-      return;
-    }
-    if (!isDateRangeValid()) {
-      setErrorMessage("Please select a valid date range.");
-      return;
-    }
-    if (isOverlapping()) {
-      setErrorMessage("Selected dates overlap with an existing booking.");
-      return;
-    }
+
+    setIsBooking(true);
+    setErrorMessage("");
 
     try {
-      setIsBooking(true);
-      setErrorMessage("");
+      const bookingData = {
+        dateFrom: dateFrom.toISOString(),
+        dateTo: dateTo.toISOString(),
+        guests,
+      };
 
-      const response = await fetch(API_BOOKING, {
-        method: "POST",
-        headers: getHeaders(),
-        body: JSON.stringify({
-          dateFrom: dateFrom.toISOString(),
-          dateTo: dateTo.toISOString(),
-          guests,
-          venueId,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
-        setDateFrom(null);
-        setDateTo(null);
-        setGuests(1);
-        setErrorMessage("");
-
-        setTimeout(() => setSuccess(false), 3000);
-      } else {
-        setErrorMessage(
-          "Booking failed: " +
-            (result.errors?.[0]?.message || "Unknown error."),
-        );
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      setErrorMessage("An error occurred.");
+      await onSubmitBooking(bookingData);
+      setSuccess(true);
+      setShowConfirm(false);
+    } catch {
+      setErrorMessage("An error occurred during booking.");
     } finally {
       setIsBooking(false);
-      setShowConfirm(false);
     }
   };
 
@@ -140,6 +75,7 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
         Book this venue
       </h2>
       <p className="text-sm md:text-base font-medium mb-4">${price} /night</p>
+
       {nights > 0 && (
         <p className="text-sm md:text-base font-semibold text-blue-900 mb-4">
           Total cost for {nights} {nights === 1 ? "night" : "nights"}: $
@@ -159,17 +95,18 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
             </span>
             <DatePicker
               id="dateFrom"
-              name="dateFrom"
               selected={dateFrom}
-              onChange={(date) => setDateFrom(date)}
+              onChange={(date) => {
+                setDateFrom(date);
+                if (dateTo && date > dateTo) {
+                  setDateTo(null);
+                }
+              }}
               selectsStart
               startDate={dateFrom}
               endDate={dateTo}
               minDate={new Date()}
-              excludeDateIntervals={bookings.map((b) => ({
-                start: new Date(b.dateFrom),
-                end: new Date(b.dateTo),
-              }))}
+              excludeDates={disabledDates}
               className="w-full pl-10 border border-gray-300 rounded-md px-2 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholderText="Select start date"
               withPortal
@@ -188,20 +125,17 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
             </span>
             <DatePicker
               id="dateTo"
-              name="dateTo"
               selected={dateTo}
               onChange={(date) => setDateTo(date)}
               selectsEnd
               startDate={dateFrom}
               endDate={dateTo}
               minDate={dateFrom || new Date()}
-              excludeDateIntervals={bookings.map((b) => ({
-                start: new Date(b.dateFrom),
-                end: new Date(b.dateTo),
-              }))}
+              excludeDates={disabledDates}
               className="w-full pl-10 border border-gray-300 rounded-md px-2 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholderText="Select end date"
               withPortal
+              disabled={!dateFrom}
             />
           </div>
         </label>
@@ -215,7 +149,6 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
       </label>
       <input
         id="guests"
-        name="guests"
         type="number"
         value={guests}
         onChange={handleGuestChange}
@@ -223,6 +156,7 @@ const CreateBooking = ({ venueId, maxGuests, price }) => {
         max={maxGuests}
         className="mt-1 mb-6 block border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
+
       {errorMessage && (
         <p className="text-red-600 text-sm mt-1 mb-2">{errorMessage}</p>
       )}
