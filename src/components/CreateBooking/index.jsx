@@ -4,6 +4,32 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * A React component that renders a booking form for a venue, allowing users to
+ * select a date range, specify the number of guests, and submit a booking.
+ * It handles disabled dates based on existing bookings, guest limits, and
+ * displays booking success/error messages.
+ *
+ * @component
+ *
+ * @param {Object} props
+ * @param {number} props.price - Price per night for the venue.
+ * @param {number} props.maxGuests - Maximum allowed guests for the booking.
+ * @param {Array<Object>} props.bookings - Existing bookings to disable dates (each booking has `dateFrom` and `dateTo`).
+ * @param {boolean} props.isLoggedIn - Whether the user is logged in.
+ * @param {function(Object): Promise} props.onSubmitBooking - Async function called on booking submission with `{ dateFrom, dateTo, guests }`.
+ *
+ * @returns {JSX.Element} The booking form UI.
+ *
+ * @example
+ * <CreateBooking
+ *   price={120}
+ *   maxGuests={5}
+ *   bookings={[{ dateFrom: "2025-06-01", dateTo: "2025-06-05" }]}
+ *   isLoggedIn={true}
+ *   onSubmitBooking={async (bookingData) => { ... }}
+ * />
+ */
 const CreateBooking = ({
   price,
   maxGuests,
@@ -21,11 +47,23 @@ const CreateBooking = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
 
+  /**
+   * Calculate the number of nights between `dateFrom` and `dateTo`.
+   * If either date is missing, returns 0.
+   *
+   * @type {number}
+   */
   const nights =
     dateFrom && dateTo
       ? Math.ceil((dateTo - dateFrom) / (1000 * 60 * 60 * 24))
       : 0;
 
+  /**
+   * Compute an array of all disabled dates based on existing bookings.
+   * Each booking disables all dates from its `dateFrom` to `dateTo`.
+   *
+   * @type {Date[]}
+   */
   const disabledDates = bookings.flatMap((b) => {
     const start = new Date(b.dateFrom);
     const end = new Date(b.dateTo);
@@ -38,11 +76,26 @@ const CreateBooking = ({
     return dates;
   });
 
+  /**
+   * Handler for changes to the guests input field.
+   * Ensures the number of guests does not exceed maxGuests.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The input change event.
+   * @returns {void}
+   */
   const handleGuestChange = (e) => {
     const value = parseInt(e.target.value, 10);
     setGuests(value > maxGuests ? maxGuests : value);
   };
 
+  /**
+   * Handles the booking submission.
+   * Validates inputs, calls the async `onSubmitBooking` prop,
+   * and manages UI state like loading, success, and error messages.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   const handleBooking = async () => {
     if (!dateFrom || !dateTo || guests < 1 || guests > maxGuests) {
       setErrorMessage("Please fill in all fields correctly.");

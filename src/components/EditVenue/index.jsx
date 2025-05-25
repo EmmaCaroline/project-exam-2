@@ -3,6 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { API_VENUES } from "../../utils/constants";
 import { getHeaders } from "../../utils/headers";
 
+/**
+ * EditVenue component allows editing of an existing venue.
+ * Fetches venue data by ID, populates form, and submits updates.
+ */
 const EditVenue = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -41,6 +45,12 @@ const EditVenue = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  /**
+   * Fetch venue data from API by ID and populate form state.
+   * Sets loading and error states accordingly.
+   * @async
+   * @returns {Promise<void>}
+   */
   useEffect(() => {
     async function fetchVenue() {
       try {
@@ -95,6 +105,12 @@ const EditVenue = () => {
     fetchVenue();
   }, [id]);
 
+  /**
+   * Handles change in input fields, updating formData state.
+   * Supports nested meta and location properties as well as top-level fields.
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e - The input change event.
+   * @returns {void}
+   */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -122,12 +138,24 @@ const EditVenue = () => {
     }
   };
 
+  /**
+   * Handles changes to the media array's individual items (url or alt).
+   * Updates media at given index with new value.
+   * @param {number} index - Index of the media item to update.
+   * @param {string} field - Field to update ("url" or "alt").
+   * @param {string} value - New value for the field.
+   * @returns {void}
+   */
   const handleMediaChange = (index, field, value) => {
     const updatedMedia = [...formData.media];
     updatedMedia[index][field] = value;
     setFormData((prev) => ({ ...prev, media: updatedMedia }));
   };
 
+  /**
+   * Adds a new empty media object to the media array in formData.
+   * @returns {void}
+   */
   const addMediaField = () => {
     setFormData((prev) => ({
       ...prev,
@@ -135,6 +163,11 @@ const EditVenue = () => {
     }));
   };
 
+  /**
+   * Removes the media object at the given index from formData.media.
+   * @param {number} index - Index of the media to remove.
+   * @returns {void}
+   */
   const removeMediaField = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -142,9 +175,24 @@ const EditVenue = () => {
     }));
   };
 
+  /**
+   * Deep compares current form data to original venue data.
+   * @param {Object} currentData - Current form data.
+   * @param {Object} originalData - Original data fetched from API.
+   * @returns {boolean} True if data are equal, false otherwise.
+   */
   const isEqual = (currentData, originalData) =>
     JSON.stringify(currentData) === JSON.stringify(originalData);
 
+  /**
+   * Handles form submission for updating the venue.
+   * Prevents submission if no changes detected.
+   * Validates media URLs, sends PUT request to API.
+   * Shows success or error messages accordingly.
+   * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
+   * @async
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccessMessage("");

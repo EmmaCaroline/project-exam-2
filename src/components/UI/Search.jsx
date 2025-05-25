@@ -1,6 +1,17 @@
 import { CiSearch } from "react-icons/ci";
 import { IoCloseCircle } from "react-icons/io5";
 
+/**
+ * Search component renders a controlled text input with a search icon and clear button.
+ *
+ * Props:
+ * @param {Object} props
+ * @param {string} props.query - Current search query string.
+ * @param {(value: string) => void} props.setQuery - Function to update the search query.
+ *
+ * Returns:
+ * @returns {JSX.Element} JSX markup for the search input with clear functionality.
+ */
 const Search = ({ query, setQuery }) => {
   return (
     <div className="flex justify-center pb-4 px-6 mb-4">

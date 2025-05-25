@@ -2,6 +2,27 @@ import { Link } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import DefaultImage from "../../assets/No_Image_Available.jpg";
 
+/**
+ * BookingCard component displays booking details including venue image,
+ * venue name, booking date range, number of guests, and a delete button.
+ *
+ * If venue data is missing, it shows an error message instead.
+ *
+ * Props:
+ * @param {Object} props
+ * @param {Object} props.booking - Booking object containing venue and booking info.
+ * @param {Object} props.booking.venue - Venue details for the booking.
+ * @param {string} props.booking.venue.id - Venue unique identifier.
+ * @param {string} props.booking.venue.name - Venue name.
+ * @param {Array} [props.booking.venue.media] - Array of media objects with `url` and `alt`.
+ * @param {string|Date} props.booking.dateFrom - Start date of the booking.
+ * @param {string|Date} props.booking.dateTo - End date of the booking.
+ * @param {number} props.booking.guests - Number of guests for the booking.
+ * @param {function} props.onDelete - Callback function triggered when delete button is clicked.
+ *
+ * Returns:
+ * @returns {JSX.Element} JSX markup for a single booking card.
+ */
 const BookingCard = ({ booking, onDelete }) => {
   if (!booking.venue) {
     return (

@@ -5,6 +5,35 @@ import VenueCard from "../UI/Venuecard";
 
 const VENUES_PER_PAGE = 20;
 
+/**
+ * Venues component fetches and displays a paginated list of venues.
+ *
+ * Features:
+ * - Fetches all venues on mount for client-side search filtering.
+ * - Fetches paginated venues from the API when no search query is active.
+ * - Allows searching venues by name, description, city, country, and address.
+ * - Displays search results with client-side pagination.
+ * - Provides Previous/Next buttons for pagination control.
+ * - Shows loading and error states during API calls.
+ * - Uses VENUES_PER_PAGE constant for pagination limits.
+ *
+ * State variables:
+ * @property {Array} allVenues - Full list of venues fetched for searching.
+ * @property {Array} venues - Venues fetched for current page when not searching.
+ * @property {string} query - Search query string.
+ * @property {boolean} isLoading - Loading state for fetching data.
+ * @property {boolean} isError - Error state if fetching fails.
+ * @property {number} currentPage - Current page number for pagination.
+ * @property {number} pageCount - Total number of pages available.
+ *
+ * Derived variables:
+ * @property {Array} filteredVenues - Venues filtered by search query.
+ * @property {Array} paginatedVenues - Venues to display on current page.
+ * @property {number} searchPageCount - Total pages for search results.
+ *
+ * Returns:
+ * @returns {JSX.Element} Rendered list of venues with search and pagination UI.
+ */
 const Venues = () => {
   const [allVenues, setAllVenues] = useState([]);
   const [venues, setVenues] = useState([]);

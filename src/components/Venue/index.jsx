@@ -15,6 +15,32 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+/**
+ * Venue component fetches and displays detailed information about a specific venue.
+ * It shows a carousel of venue images, venue info (name, location, rating, facilities, owner),
+ * and conditionally renders a booking interface or the venue manager's booking list.
+ * Venue managers who own the venue can edit or delete it.
+ *
+ * Features:
+ * - Fetches venue data including owner and bookings on mount based on venue ID from URL params.
+ * - Image carousel using Swiper with navigation controls.
+ * - Displays venue name, location, rating, facilities, owner info, and description.
+ * - Conditionally shows CreateBooking form for users or BookingList for venue managers.
+ * - Allows venue owners with venueManager role to edit or delete the venue.
+ * - Confirmation modal for deletion with async handling.
+ *
+ * Internal functions:
+ * @function handleBookingSubmit
+ *   Sends booking data to the API for creating a new booking.
+ *
+ * @function handleDelete
+ *   Deletes the venue after confirmation and redirects to the profile page.
+ *
+ * @function handleCancelDelete
+ *   Closes the delete confirmation modal.
+ *
+ * @returns {JSX.Element} Rendered Venue page UI.
+ */
 const Venue = () => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

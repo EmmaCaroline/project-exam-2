@@ -6,6 +6,14 @@ import { useLogout } from "../../auth/HandleLogout";
 import FooterBanner from "../../assets/sunset.jpg";
 import ConfirmModal from "../UI/ConfirmModal";
 
+/**
+ * Layout component providing site header, navigation, and footer.
+ * Includes responsive navigation with login/logout/profile links,
+ * mobile menu toggle, and logout confirmation modal.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered layout component.
+ */
 const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -15,6 +23,11 @@ const Layout = () => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
+    /**
+     * Handles clicks outside the dropdown menu to close it.
+     * @param {MouseEvent} event - The mouse event triggered by clicking.
+     * @returns {void}
+     */
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setMenuOpen(false);
@@ -30,17 +43,39 @@ const Layout = () => {
     };
   }, [menuOpen]);
 
+  /**
+   * Toggles the mobile menu open/close state.
+   * @returns {void}
+   */
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  /**
+   * Opens the logout confirmation modal.
+   * @returns {void}
+   */
   const openConfirm = () => setConfirmOpen(true);
+
+  /**
+   * Closes the logout confirmation modal.
+   * @returns {void}
+   */
   const closeConfirm = () => setConfirmOpen(false);
 
+  /**
+   * Handles confirming logout: closes modal, calls logout hook,
+   * and closes the menu.
+   * @returns {void}
+   */
   const confirmLogout = () => {
     closeConfirm();
     logout();
     setMenuOpen(false);
   };
 
+  /**
+   * Handles clicking any navigation link by closing the mobile menu.
+   * @returns {void}
+   */
   const handleLinkClick = () => setMenuOpen(false);
 
   return (

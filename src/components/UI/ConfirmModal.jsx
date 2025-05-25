@@ -1,3 +1,18 @@
+/**
+ * ConfirmModal component renders a modal dialog to confirm or cancel an action.
+ *
+ * The modal is only rendered when `isOpen` is true.
+ *
+ * Props:
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Whether the modal is visible.
+ * @param {() => void} props.onConfirm - Callback function called when the Confirm button is clicked.
+ * @param {() => void} props.onCancel - Callback function called when the Cancel button is clicked.
+ * @param {string} props.message - Message to display inside the modal.
+ *
+ * Returns:
+ * @returns {JSX.Element|null} JSX markup for the confirmation modal or null if not open.
+ */
 const ConfirmModal = ({ isOpen, onConfirm, onCancel, message }) => {
   if (!isOpen) return null;
 

@@ -4,6 +4,17 @@ import { API_PROFILES } from "../../utils/constants";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * EditProfile component allows a user to update their profile information,
+ * including avatar image URL and venue manager status.
+ *
+ * Fetches the current profile data on mount using the `username` from URL params,
+ * and updates the profile via a PUT request on form submission.
+ *
+ * @component
+ *
+ * @returns {JSX.Element} A form for editing user profile data.
+ */
 const EditProfile = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [venueManager, setVenueManager] = useState(false);
@@ -13,6 +24,14 @@ const EditProfile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
 
+  /**
+   * Fetches profile data for the user based on the `username` URL param.
+   * Sets the initial state of `venueManager` and `currentAvatarUrl`.
+   *
+   * @async
+   * @function fetchProfile
+   * @returns {Promise<void>}
+   */
   useEffect(() => {
     if (!username) {
       console.error("Username is undefined!");
@@ -36,6 +55,15 @@ const EditProfile = () => {
     fetchProfile();
   }, [username]);
 
+  /**
+   * Handles submission of the profile edit form.
+   * Sends a PUT request to update profile data including avatar and venue manager status.
+   *
+   * @async
+   * @function handleSubmit
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");

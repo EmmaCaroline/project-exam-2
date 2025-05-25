@@ -2,6 +2,13 @@ import { handleRegister } from "../../auth/HandleRegister";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Register component allows users to create a new account.
+ * Handles form state, validation, submission, and displays success or error messages.
+ *
+ * @component
+ * @returns {JSX.Element} Registration form UI.
+ */
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,6 +20,12 @@ const Register = () => {
   const navigate = useNavigate();
   const [venueManager, setVenueManager] = useState(false);
 
+  /**
+   * Validates the registration form fields.
+   *
+   * @function validateForm
+   * @returns {boolean} Returns true if all fields are valid, false otherwise.
+   */
   const validateForm = () => {
     const errors = {};
 
@@ -37,6 +50,15 @@ const Register = () => {
     return Object.keys(errors).length === 0;
   };
 
+  /**
+   * Handles form submission, triggers registration process,
+   * displays success or error feedback, and redirects on success.
+   *
+   * @async
+   * @function handleSubmit
+   * @param {React.FormEvent<HTMLFormElement>} e - Form submission event.
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;

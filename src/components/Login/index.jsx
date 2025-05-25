@@ -2,6 +2,13 @@ import { handleLogin } from "../../auth/HandleLogin";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Login component provides a form for users to enter their email and password,
+ * handles authentication via handleLogin, and redirects on success.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered login form component.
+ */
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -9,6 +16,14 @@ const Login = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+  /**
+   * Handles form submission for logging in a user.
+   * Calls handleLogin with entered credentials, sets error or success states,
+   * and redirects to the user's profile page on success.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @returns {Promise<void>} Promise resolving when login process completes.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");

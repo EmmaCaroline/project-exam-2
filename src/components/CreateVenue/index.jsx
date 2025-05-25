@@ -3,6 +3,12 @@ import { API_VENUES } from "../../utils/constants";
 import { getHeaders } from "../../utils/headers";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * CreateVenue component allows users to fill out a form to create a new venue.
+ * Handles form state, input changes, validation, and submission to the API.
+ * @component
+ * @returns {JSX.Element} The venue creation form
+ */
 const CreateVenue = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -30,6 +36,11 @@ const CreateVenue = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const profileName = user?.name;
 
+  /**
+   * Handles changes on form input fields, including nested meta and location objects.
+   * Updates the formData state accordingly.
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e The input change event
+   */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -57,12 +68,22 @@ const CreateVenue = () => {
     }
   };
 
+  /**
+   * Handles changes on the media input fields (url and alt text).
+   * Updates the media array at the specified index.
+   * @param {number} index The index of the media item in the array
+   * @param {string} field The field to update ("url" or "alt")
+   * @param {string} value The new value for the field
+   */
   const handleMediaChange = (index, field, value) => {
     const updatedMedia = [...formData.media];
     updatedMedia[index][field] = value;
     setFormData((prev) => ({ ...prev, media: updatedMedia }));
   };
 
+  /**
+   * Adds a new empty media object to the media array in formData.
+   */
   const addMediaField = () => {
     setFormData((prev) => ({
       ...prev,
@@ -70,6 +91,12 @@ const CreateVenue = () => {
     }));
   };
 
+  /**
+   * Handles the form submission, validates media URLs,
+   * constructs the payload, sends a POST request to the API,
+   * and handles success or error responses.
+   * @param {React.FormEvent<HTMLFormElement>} e The form submit event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 

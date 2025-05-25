@@ -1,3 +1,21 @@
+/**
+ * BookingList component displays a list of bookings for a venue.
+ *
+ * If there are no bookings, it shows a message indicating no bookings exist.
+ *
+ * Props:
+ * @param {Object} props
+ * @param {Array<Object>} props.bookings - Array of booking objects to display.
+ * @param {string} props.bookings[].id - Unique identifier for each booking.
+ * @param {Object} [props.bookings[].customer] - Customer information for the booking.
+ * @param {string} [props.bookings[].customer.name] - Name of the customer who made the booking.
+ * @param {string|Date} props.bookings[].dateFrom - Start date of the booking.
+ * @param {string|Date} props.bookings[].dateTo - End date of the booking.
+ * @param {number} props.bookings[].guests - Number of guests for the booking.
+ *
+ * Returns:
+ * @returns {JSX.Element} JSX markup for the list of bookings.
+ */
 const BookingList = ({ bookings }) => {
   if (!bookings || bookings.length === 0) {
     return <p>No bookings have been made for this venue yet.</p>;

@@ -11,6 +11,14 @@ import { fetchVenuesByProfile } from "../../utils/fetchVenuesByProfile";
 import VenueCard from "../UI/Venuecard";
 import { IoIosCreate } from "react-icons/io";
 
+/**
+ * Profile component displays user profile data including bookings and venues.
+ * Fetches profile info, bookings, and venues (if user is a venue manager) on mount.
+ * Allows deleting bookings with confirmation modal.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered profile page component.
+ */
 const Profile = () => {
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
@@ -21,11 +29,22 @@ const Profile = () => {
   const [selectedBookingId, setSelectedBookingId] = useState(null);
   const [venues, setVenues] = useState([]);
 
+  /**
+   * Opens the confirmation modal to delete a booking.
+   *
+   * @param {string|number} id - The ID of the booking to delete.
+   * @returns {void}
+   */
   const openConfirm = (id) => {
     setSelectedBookingId(id);
     setConfirmOpen(true);
   };
 
+  /**
+   * Closes the confirmation modal and resets the selected booking ID.
+   *
+   * @returns {void}
+   */
   const closeConfirm = () => {
     setSelectedBookingId(null);
     setConfirmOpen(false);
@@ -73,6 +92,14 @@ const Profile = () => {
     fetchProfile();
   }, [username]);
 
+  /**
+   * Deletes a booking by selectedBookingId.
+   * Calls DELETE API, updates local bookings state, and closes confirmation modal.
+   * Alerts the user if deletion fails.
+   *
+   * @async
+   * @returns {Promise<void>} Resolves after deletion attempt.
+   */
   const deleteBooking = async () => {
     if (!selectedBookingId) return;
 

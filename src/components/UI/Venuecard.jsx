@@ -3,6 +3,22 @@ import DefaultImage from "../../assets/No_Image_Available.jpg";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa6";
 
+/**
+ * VenueCard component displays a venue's image, location, name, rating, and price.
+ *
+ * @param {Object} props
+ * @param {Object} props.venue - Venue object containing venue details.
+ * @param {number} props.venue.id - Unique identifier of the venue.
+ * @param {string} props.venue.name - Name of the venue.
+ * @param {number} props.venue.rating - Numeric rating of the venue.
+ * @param {number} props.venue.price - Price per night for the venue.
+ * @param {Object} [props.venue.location] - Location object of the venue.
+ * @param {string} [props.venue.location.city] - City where the venue is located.
+ * @param {string} [props.venue.location.country] - Country where the venue is located.
+ * @param {Array<{url: string, alt: string}>} [props.venue.media] - Array of media objects with URL and alt text.
+ *
+ * @returns {JSX.Element} JSX element representing a clickable venue card.
+ */
 const VenueCard = ({ venue }) => {
   const starRating = venue.rating.toFixed(1);
   const city = venue.location?.city || "";
