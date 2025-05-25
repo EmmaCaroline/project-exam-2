@@ -101,11 +101,11 @@ export const Profile = () => {
                 className="w-14 h-14 md:w-32 md:h-32 rounded-full border-2 object-cover"
               />
             )}
-            <h1 className="font-heading font-bold text-lg md:text-xl lg:text-2xl mb-2">
+            <h1 className="font-heading text-lg md:text-xl lg:text-2xl mb-2">
               {profile.name}
             </h1>
           </span>
-          <Link to={`editprofile`}>
+          <Link to={`/editprofile`}>
             <span className="flex items-center flex-shrink-0 gap-2">
               <FaUserEdit className="text-xl lg:text-2xl" />
               <button className="font-body text-sm md:text-base hidden md:flex">
@@ -119,7 +119,9 @@ export const Profile = () => {
         <p>
           Venue Manager: <strong>{profile.venueManager ? "Yes" : "No"}</strong>
         </p>
-
+        <h2 className="font-heading font-bold text-lg md:text-xl lg:text-2xl my-4">
+          Your bookings
+        </h2>
         {bookings.length === 0 ? (
           <p>No bookings found.</p>
         ) : (
