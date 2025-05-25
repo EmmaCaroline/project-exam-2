@@ -20,10 +20,13 @@ const Login = () => {
     if (result.success) {
       setSuccess(true);
 
-      // 3. Redirect after 2 seconds
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      // Read the saved user after login success
+      const user = JSON.parse(localStorage.getItem("user"));
+      const profileName = user?.name;
+
+      if (profileName) {
+        setTimeout(() => navigate(`/profile/${profileName}`), 2000);
+      }
     } else {
       setError(result.message || "Login failed");
     }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { API_VENUES } from "../../utils/constants";
 import { getHeaders } from "../../utils/headers";
+import { useNavigate } from "react-router-dom";
 
 const CreateVenue = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,13 @@ const CreateVenue = () => {
       country: "",
     },
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const profileName = user?.name;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -65,6 +73,9 @@ const CreateVenue = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setErrorMessage("");
+    setSuccessMessage("");
+
     const filteredMedia = formData.media.filter((media) => {
       try {
         if (!media.url.trim()) return false;
@@ -93,89 +104,173 @@ const CreateVenue = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Venue created:", data);
+        setSuccessMessage("Venue created successfully!");
+        setFormData({
+          name: "",
+          description: "",
+          price: "",
+          maxGuests: "",
+          rating: "",
+          media: [{ url: "", alt: "" }],
+          meta: {
+            wifi: false,
+            parking: false,
+            breakfast: false,
+            pets: false,
+          },
+          location: {
+            city: "",
+            country: "",
+          },
+        });
+
+        if (profileName) {
+          setTimeout(() => navigate(`/profile/${profileName}`), 2000);
+        }
       } else {
-        console.error("Error creating venue:", data);
+        setErrorMessage(
+          data.message || "Error creating venue. Please try again.",
+        );
       }
-    } catch (error) {
-      console.error("Submission failed:", error);
+    } catch {
+      setErrorMessage(
+        "Submission failed. Please check your internet connection.",
+      );
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-4">
-      <h2 className="text-2xl font-bold">Create a New Venue</h2>
-
-      <input
-        type="text"
-        name="name"
-        placeholder="Venue Name"
-        value={formData.name}
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-      />
-
-      <textarea
-        name="description"
-        placeholder="Description"
-        value={formData.description}
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-      />
-
-      <input
-        type="number"
-        name="price"
-        placeholder="Price"
-        value={formData.price}
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-        min="0"
-      />
-
-      <input
-        type="number"
-        name="maxGuests"
-        placeholder="Max Guests"
-        value={formData.maxGuests}
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-        min="1"
-      />
-
-      <input
-        type="number"
-        name="rating"
-        placeholder="Rating (optional)"
-        value={formData.rating}
-        onChange={handleChange}
-        className="w-full border p-2"
-        min="0"
-        max="5"
-        step="0.1"
-      />
+    <form
+      onSubmit={handleSubmit}
+      className="sm:w-80 md:w-96 mx-auto p-6 mt-8 space-y-6 bg-white rounded-lg shadow-lg border border-customBlue font-body"
+    >
+      <h2 className="text-2xl font-bold mb-4 text-gray-900">
+        Create a New Venue
+      </h2>
 
       <div>
-        <h3 className="font-medium mb-1">Images</h3>
+        <label
+          htmlFor="name"
+          className="block text-sm font-semibold mb-1 text-gray-700"
+        >
+          Venue Name
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="description"
+          className="block text-sm font-semibold mb-1 text-gray-700"
+        >
+          Description
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          rows={4}
+          required
+          className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="price"
+          className="block text-sm font-semibold mb-1 text-gray-700"
+        >
+          Price
+        </label>
+        <input
+          id="price"
+          name="price"
+          type="number"
+          min="0"
+          value={formData.price}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="maxGuests"
+          className="block text-sm font-semibold mb-1 text-gray-700"
+        >
+          Max Guests
+        </label>
+        <input
+          id="maxGuests"
+          name="maxGuests"
+          type="number"
+          min="1"
+          value={formData.maxGuests}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="rating"
+          className="block text-sm font-semibold mb-1 text-gray-700"
+        >
+          Rating (optional)
+        </label>
+        <input
+          id="rating"
+          name="rating"
+          type="number"
+          min="0"
+          max="5"
+          step="0.1"
+          value={formData.rating}
+          onChange={handleChange}
+          className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      <div>
+        <h3 className="font-semibold mb-2 text-gray-900">Images</h3>
         {formData.media.map((media, index) => (
-          <div key={index} className="mb-2">
+          <div key={index} className="mb-4">
+            <label
+              htmlFor={`media-url-${index}`}
+              className="block mb-1 text-sm font-semibold text-gray-700"
+            >
+              Image URL
+            </label>
             <input
+              id={`media-url-${index}`}
               type="url"
-              placeholder="Image URL"
               value={media.url}
               onChange={(e) => handleMediaChange(index, "url", e.target.value)}
-              className="w-full border p-2 mb-1"
+              className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary mb-2"
             />
+            <label
+              htmlFor={`media-alt-${index}`}
+              className="block mb-1 text-sm font-semibold text-gray-700"
+            >
+              Alt Text
+            </label>
             <input
+              id={`media-alt-${index}`}
               type="text"
-              placeholder="Alt text"
               value={media.alt}
               onChange={(e) => handleMediaChange(index, "alt", e.target.value)}
-              className="w-full border p-2"
+              className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         ))}
@@ -188,10 +283,10 @@ const CreateVenue = () => {
         </button>
       </div>
 
-      <fieldset className="space-y-1">
-        <legend className="font-medium">Amenities</legend>
+      <fieldset className="space-y-2">
+        <legend className="font-semibold text-gray-900">Amenities</legend>
         {["wifi", "parking", "breakfast", "pets"].map((option) => (
-          <label key={option} className="block">
+          <label key={option} className="block text-sm text-gray-700">
             <input
               type="checkbox"
               name={option}
@@ -204,32 +299,57 @@ const CreateVenue = () => {
         ))}
       </fieldset>
 
-      <div className="space-y-2">
-        <h3 className="font-medium">Location (optional)</h3>
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formData.location.city}
-          onChange={handleChange}
-          className="w-full border p-2"
-        />
-        <input
-          type="text"
-          name="country"
-          placeholder="Country"
-          value={formData.location.country}
-          onChange={handleChange}
-          className="w-full border p-2"
-        />
+      <div className="space-y-4">
+        <h3 className="font-semibold text-gray-900">Location (optional)</h3>
+        <div>
+          <label
+            htmlFor="city"
+            className="block text-sm font-semibold mb-1 text-gray-700"
+          >
+            City
+          </label>
+          <input
+            id="city"
+            name="city"
+            type="text"
+            value={formData.location.city}
+            onChange={handleChange}
+            className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="country"
+            className="block text-sm font-semibold mb-1 text-gray-700"
+          >
+            Country
+          </label>
+          <input
+            id="country"
+            name="country"
+            type="text"
+            value={formData.location.country}
+            onChange={handleChange}
+            className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
+      <button type="submit" className="btn btn-primary w-full text-center py-3">
         Create Venue
       </button>
+
+      {errorMessage && (
+        <div className="text-red-900 bg-red-200 border border-red-500 rounded-md p-2 mt-3 font-semibold">
+          {errorMessage}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="text-green-700 bg-green-100 border border-green-400 rounded-md p-2 mt-3 font-semibold">
+          {successMessage}
+        </div>
+      )}
     </form>
   );
 };
