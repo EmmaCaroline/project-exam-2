@@ -306,12 +306,14 @@ const EditVenue = () => {
         </label>
         <input
           id="price"
-          type="number"
+          type="text"
           name="price"
+          inputMode="numeric"
+          pattern="[0-9]*"
           value={formData.price}
           onChange={handleChange}
           required
-          min="0"
+          placeholder="Price per night"
           className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
@@ -373,6 +375,7 @@ const EditVenue = () => {
                 onChange={(e) =>
                   handleMediaChange(index, "url", e.target.value)
                 }
+                placeholder="Full image URL"
                 className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary mb-2"
               />
               <label
@@ -389,6 +392,7 @@ const EditVenue = () => {
                   onChange={(e) =>
                     handleMediaChange(index, "alt", e.target.value)
                   }
+                  placeholder="Alt text for you image"
                   className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {formData.media.length > 1 && (

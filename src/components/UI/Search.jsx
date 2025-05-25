@@ -24,6 +24,9 @@ const Search = ({ query, setQuery }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Where to?"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
           className="w-full pl-10 pr-10 focus:outline-none font-body text-center bg-transparent"
         />
         {query && (
@@ -31,7 +34,7 @@ const Search = ({ query, setQuery }) => {
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className="absolute right-3 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 inline-flex w-auto p-0"
           >
             <IoCloseCircle className="text-2xl" />
           </button>

@@ -221,11 +221,13 @@ const CreateVenue = () => {
         <input
           id="price"
           name="price"
-          type="number"
-          min="0"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
           value={formData.price}
           onChange={handleChange}
           required
+          placeholder="Price per night"
           className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
@@ -284,6 +286,7 @@ const CreateVenue = () => {
               type="url"
               value={media.url}
               onChange={(e) => handleMediaChange(index, "url", e.target.value)}
+              placeholder="Full image URL"
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary mb-2"
             />
             <label
@@ -297,6 +300,7 @@ const CreateVenue = () => {
               type="text"
               value={media.alt}
               onChange={(e) => handleMediaChange(index, "alt", e.target.value)}
+              placeholder="Alt text for you image"
               className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
