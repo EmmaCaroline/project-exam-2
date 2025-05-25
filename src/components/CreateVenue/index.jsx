@@ -142,7 +142,7 @@ const CreateVenue = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="sm:w-80 md:w-96 mx-auto p-6 mt-8 space-y-6 bg-white rounded-lg shadow-lg border border-customBlue font-body"
+      className="md:w-[700px] mx-auto p-6 mt-8 space-y-6 bg-white rounded-lg shadow-lg border border-customBlue font-body"
     >
       <h2 className="text-2xl font-bold mb-4 text-gray-900">
         Create a New Venue
