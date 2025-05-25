@@ -149,21 +149,6 @@ const Register = () => {
             )}
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="avatar">Profile picture / avatar (optional):</label>
-            <input
-              id="avatar"
-              type="url"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-              placeholder="Image URL"
-              className="w-full p-3 border border-secondary rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            {fieldErrors.avatar && (
-              <p className="text-red-600 text-sm mt-1">{fieldErrors.avatar}</p>
-            )}
-          </div>
-
           <div className="mb-4 flex items-center">
             <input
               type="checkbox"
