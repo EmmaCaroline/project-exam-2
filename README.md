@@ -1,40 +1,52 @@
 # Holidaze
 
-A React application for browsing venues, managing bookings, and user profiles. Features include venue listing cards, booking management, search functionality, and confirmation modals — all built with React, React Router, and React Icons.
+Online rental marketplace / Online Travel Agency
 
-## Tech Stack
+## Description
 
-React
-React Router DOM
-React Icons
-Tailwind CSS
-Vite (or your bundler)
-JavaScript (ES6+)
+This project is an online travel agency application for browsing and booking venues.  
+Users can register as either **customers** or **venue managers**.
+
+- Customers can browse and search for venues, and make bookings.
+- Venue managers have all the capabilities of customers, and can also create and manage their own venues, as well as view and manage bookings made to them.
+
+## Built With
+
+- [React](https://react.dev/) – JavaScript library for building user interfaces
+- [Vite](https://vitejs.dev/) – Fast build tool and development server
+- [React Router](https://reactrouter.com/) – Routing library for React applications
+- [Tailwind CSS](https://tailwindcss.com/) – Utility-first CSS framework for styling
 
 ## Getting Started
 
-### Prerequisites
+Follow these steps to set up and run the project locally:
 
-Make sure you have the following installed:
+1. **Clone the repository**
 
-Node.js (>=16.x)
-npm
+   ```bash
+   git clone git@github.com:EmmaCaroline/project-exam-2.git
+   ```
 
-###Installation
+2. **Install dependencies**
 
-1. Clone the repository
-2. Install dependencies
+   Ensure you have Node.js installed. Then run:
 
-## Running the Project Locally
+   ```bash
+   npm install
+   ```
 
-### Start the development server:
+3. **Start the development server**
 
-npm run dev
+   ```bash
+   npm run dev
+   ```
 
-### Open the project in your browser
+4. **Open the project in your browser**
 
-Vite will start a development server and provide a local URL (e.g., http://localhost:5173). Open this link in your browser to view the project
+   Vite will start a development server and provide a local URL (e.g., http://localhost:5173). Open this link in your browser to view the project.
 
-### Build for production (optional)
+5. **Build for production (optional)**
 
-npm run build
+   ```bash
+   npm run build
+   ```
